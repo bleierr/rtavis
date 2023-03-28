@@ -96,7 +96,7 @@ const margin = {top: 50, right: 50, bottom: 50, left: 120},
 const svg = d3.select("#datavis")
           .append("svg")
           .attr("width", width + margin.left + margin.right)
-          .attr("height", height + margin.top + margin.bottom)
+          .attr("height", height + margin.top + margin.bottom + 50)
           .append("g")
           .attr("transform",
                 "translate(" + margin.left + "," + margin.top + ")");
@@ -183,7 +183,8 @@ const mouseclick = function(event, d) {
 
 
      // List of groups (here I have one group per column)
-     var allGroup = [... new Set(d3.map(data, function(d){return (d) ? d.gremium : '' }).values())]
+     var allGroup = ["Alle Gremien", ... new Set(d3.map(data, function(d){return (d) ? d.gremium : '' }).values())]
+
 
      // add the options to the button
      d3.select("#selectButton")
@@ -224,7 +225,13 @@ function update(selectedGroup) {
 
   // Create new data with the selection?
   console.log("Data", data)
-  const filteredData = data.filter(function(d){return d.gremium == selectedGroup })
+  let filteredData = []
+  if (selectedGroup==="Alle Gremien"){
+    filteredData = data
+  }else{
+    filteredData = data.filter(function(d){return d.gremium == selectedGroup })
+  }
+
   console.log("Filtered Data", filteredData)
   // Give these new data to update line
 
@@ -251,6 +258,22 @@ function update(selectedGroup) {
             .on("mouseleave", mouseleave)
  
 }
+
+svg.append("text")      // text label for the x axis
+        .attr("x", width / 2 )
+        .attr("y", height + 40 )
+        .style("text-anchor", "middle")
+        .text("Wochentag");
+
+svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - 80 )
+        .attr("x",0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Woche im Jahr 1576");
+
+
 
 // When the button is changed, run the updateChart function
 d3.select("#selectButton").on("change", function(d) {
