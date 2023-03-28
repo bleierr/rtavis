@@ -23,7 +23,7 @@ const getDaysArray = function(start, end) {
   return arr;
 };
 
-const daysArr = getDaysArray("1576-05-03", "1576-10-25")
+const daysArr = getDaysArray("1576-05-03", "1576-10-24")
 
 const dayMap = daysArr.reduce((a, c, i) => {
   return i % 7 === 0 ? a.concat([daysArr.slice(i, i + 7)]) : a;
@@ -32,82 +32,63 @@ const dayMap = daysArr.reduce((a, c, i) => {
 
 //console.log("RES:",res[1][1])
 
-const dayObj = {}
+
 
 const weekdays = ['Mo','Di','Mi','Do','Fr','Sa','So']
 
 const calendarWeeks = []
 
+console.log("Daymap 1:",dayMap[0][0])
+
 for (w in dayMap){
-  calendarWeeks.push("KW"+String(Number(w)+14))
-  for (d in dayMap[w]){
-    const o = {}
-    o.week = "KW"+String(Number(w)+14)
-    o.weekday = weekdays[d]
-    o.id = dayMap[w][d].toISOString().split('T')[0]
+  //calendarWeeks.push("KW"+String(Number(w)+14))
 
-    o.days = data.filter(d => d.tag === o.id);
+  const mondayDate = dayMap[w][0].getUTCDate() + "." + (dayMap[w][0].getUTCMonth() + 1) + "."
+  const sundayDate = dayMap[w][6].getUTCDate() + "." + (dayMap[w][6].getUTCMonth() + 1) + "."
 
-    o.count = o.days.length;
+  calendarWeeks.push(mondayDate + "-" + sundayDate)
 
-    dayObj[dayMap[w][d].toISOString().split('T')[0]] = o
-    //weeksObj[dayMap[w][d].toISOString().split('T')[0]] = o
+}
+//console.log("Calendar:",calendarWeeks)
 
-  }
+
+
+const makeGridObj = (gridMap, data) => {
+
+    const gridObj = {}
+
+    for (w in gridMap){
+      const mondayDate = dayMap[w][0].getUTCDate() + "." + (dayMap[w][0].getUTCMonth() + 1) + "."
+      const sundayDate = dayMap[w][6].getUTCDate() + "." + (dayMap[w][6].getUTCMonth() + 1) + "."
+
+      for (d in gridMap[w]){
+        const o = {}
+        //o.week = "KW"+String(Number(w)+14)
+        o.week = mondayDate + "-" + sundayDate
+
+        o.weekday = weekdays[d]
+        o.id = gridMap[w][d].toISOString().split('T')[0]
+
+        o.days = data.filter(d => d.tag === o.id);
+
+        o.count = o.days.length;
+
+        gridObj[gridMap[w][d].toISOString().split('T')[0]] = o
+        //weeksObj[dayMap[w][d].toISOString().split('T')[0]] = o
+
+      }
+    }
+
+    return gridObj
+
 }
 
-//Calendar Weeks:  KW21, KW22, etc.
 
-//dayArr = {week, weekday, id},{week, weekday, id}
+const dayObj = makeGridObj(dayMap, data);
 
-//const days = []
-
-
-/* for (d of data){
-
-  console.log("d: ", d)
-  if (d){
-    if (Object.keys(dayObj).includes(d.tag)){
-          d.weekday = dayObj[d.tag].weekday
-          d.week = dayObj[d.tag].week
-          days.push(d)
-    }
-} */
-            /* //console.log(d)
-            if(days.hasOwnProperty(d)){
-                days[d].days.push(data[i].id)
-                days[d].daysCount = days[d].days.length
-                
-            }else{
-                days[d] = {}
-                days[d].days = []
-                days[d].days.push(data[i].id)
-                days[d].id = d
-            } 
-        }*/
-    
-// } 
-
-//console.log("days:", dayObj);
-
-
-//console.log(data)
-
-/* for (const [i,d] of Object.keys(days).sort().entries()){
-  if ( i >= 50){
-    daysObj[d] = {};
-    daysObj[d].id = d;
-    daysObj[d].days = days[d]
-    daysObj[d].daysCount = days[d].length
-   
-  }
-} */
-
-//console.log("dayArr:", dayArr)
-//console.log("daysObj:", daysObj)
 
 // set the dimensions and margins of the graph
-const margin = {top: 50, right: 50, bottom: 50, left: 50},
+const margin = {top: 50, right: 50, bottom: 50, left: 120},
       width = 500 - margin.left - margin.right,
       height = 800 - margin.top - margin.bottom;
 
@@ -219,7 +200,7 @@ const mouseclick = function(event, d) {
        
 
 svg.selectAll()
-          .data(Object.values(dayObj), function(d) {return d.weekday+':'+d.week;})
+          .data(Object.values(makeGridObj(dayMap, data)), function(d) {return d.weekday+':'+d.week;})
           .enter()
           .append("rect")
             .attr("class", "cell")
@@ -237,4 +218,45 @@ svg.selectAll()
             .on("mouseleave", mouseleave)
 
 
-//.attr("fill", function(d) { return (daysObj.hasOwnProperty(d.id) ) ? myColor(daysObj[d.id].daysCount): myColor(0)})
+
+// A function that update the chart
+function update(selectedGroup) {
+
+  // Create new data with the selection?
+  console.log("Data", data)
+  const filteredData = data.filter(function(d){return d.gremium == selectedGroup })
+  console.log("Filtered Data", filteredData)
+  // Give these new data to update line
+
+  d3.select('.cell').remove()
+
+  d3.select("#infotext").text("");
+
+  svg.selectAll()
+          .data(Object.values(makeGridObj(dayMap, filteredData)), function(d) {return d.weekday+':'+d.week;})
+          .enter()
+          .append("rect")
+            .attr("class", "cell")
+            .style("cursor", "pointer")
+            .style("stroke-width", "1")
+            .style("stroke", "white")
+            .attr("x", function(d) { return x(d.weekday); })
+            .attr("y", function(d) { return y(d.week); })
+            .attr("width", x.bandwidth())
+            .attr("height", y.bandwidth())
+            .attr("fill", function(d) { return (d.hasOwnProperty("count") ) ? myColor(d.count): myColor(0)})
+            .on("click", mouseclick)
+            .on("mouseover", mouseover)
+            .on("mousemove", mousemove)
+            .on("mouseleave", mouseleave)
+ 
+}
+
+// When the button is changed, run the updateChart function
+d3.select("#selectButton").on("change", function(d) {
+    // recover the option that has been chosen
+    var selectedOption = d3.select(this).property("value")
+    // run the updateChart function with this selected option
+    console.log(selectedOption)
+    update(selectedOption)
+})
