@@ -127,7 +127,7 @@ const y = d3.scaleBand()
  // Build color scale
           var myColor = d3.scaleLinear()
             .range(["white", "#69b3a2"])
-            .domain([0,10])        
+            .domain([0,15])        
 
 const infotext =  d3.select("#infotext").text(d.id);
 
@@ -183,7 +183,7 @@ const mouseclick = function(event, d) {
 
 
      // List of groups (here I have one group per column)
-     var allGroup = ["Alle Gremien", ... new Set(d3.map(data, function(d){return (d) ? d.gremium : '' }).values())]
+     var allGroup = ["Alle Gremien"].concat([... new Set(d3.map(data, function(d){return (d) ? d.gremium : '' }).values())].sort())
 
 
      // add the options to the button
