@@ -27,7 +27,7 @@ const daysArr = getDaysArray("1576-05-03", "1576-10-24")
 
 const dayMap = daysArr.reduce((a, c, i) => {
   return i % 7 === 0 ? a.concat([daysArr.slice(i, i + 7)]) : a;
-}, []);
+}, []).reverse();
 //console.log(dayMap)
 
 //console.log("RES:",res[1][1])
@@ -88,7 +88,7 @@ const dayObj = makeGridObj(dayMap, data);
 
 
 // set the dimensions and margins of the graph
-const margin = {top: 50, right: 50, bottom: 50, left: 120},
+const margin = {top: 80, right: 50, bottom: 50, left: 120},
       width = 500 - margin.left - margin.right,
       height = 800 - margin.top - margin.bottom;
 
@@ -109,9 +109,8 @@ const x = d3.scaleBand()
           .domain(weekdays)
           .padding(0.01);
         
-          svg.append("g")
-          .attr("transform", "translate(0," + height + ")")
-          .call(d3.axisBottom(x))
+     svg.append("g")
+          .call(d3.axisTop(x))
           
      
         
@@ -126,8 +125,8 @@ const y = d3.scaleBand()
 
  // Build color scale
           var myColor = d3.scaleLinear()
-            .range(["white", "#69b3a2"])
-            .domain([0,15])        
+            .range(["white","#AFCAEB", "#46505E"])
+            .domain([0.001,15, 50])        
 
 const infotext =  d3.select("#infotext").text(d.id);
 
@@ -261,7 +260,7 @@ function update(selectedGroup) {
 
 svg.append("text")      // text label for the x axis
         .attr("x", width / 2 )
-        .attr("y", height + 40 )
+        .attr("y", -40 )
         .style("text-anchor", "middle")
         .text("Wochentag");
 
