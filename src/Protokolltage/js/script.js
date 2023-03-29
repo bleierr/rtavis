@@ -145,9 +145,7 @@ const mouseclick = function(event, d) {
           .style("stroke", "red")
           infotext.html(t);
 
-          d3.select("div#infotext")
-            .style("display", "block")
-
+         
 
         }
 
@@ -285,10 +283,6 @@ d3.select("#selectButton").on("change", function(d) {
     // recover the option that has been chosen
     var selectedOption = d3.select(this).property("value")
    
-    d3.select("#infotext")
-            .style("display", "none")
-
-
-
+   
     update(selectedOption)
 })

@@ -1,14 +1,7 @@
-body{
-    background-color: aliceblue;
-}
+
 #infotext{
     margin-top: 75px;
-    height: 600;
-    padding: 2rem;
-    border: 1px solid #ccc;
-    overflow: scroll;
-    background:white;
-    display:none;
+    
 }
 
 #selectButton{
