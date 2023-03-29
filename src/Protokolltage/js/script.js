@@ -145,7 +145,7 @@ const mouseclick = function(event, d) {
           .style("stroke", "red")
           infotext.html(t);
 
-          d3.select("#infotext")
+          d3.select("div#infotext")
             .style("display", "block")
 
 
