@@ -186,7 +186,7 @@ const mouseclick = function(event, d) {
 
 
      // List of groups (here I have one group per column)
-     var allGroup = ["Alle Gremien"].concat([... new Set(d3.map(data, function(d){return (d) ? d.gremium : '' }).values())].sort())
+     var allGroup = ["Alle Gremien"].concat([... new Set(d3.map(data, function(d){return (d) ? d.gremium.trim(' ') : '' }).values())].sort())
 
 
      // add the options to the button
