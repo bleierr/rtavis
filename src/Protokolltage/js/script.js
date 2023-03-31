@@ -1,7 +1,7 @@
 const gams = "https://gams.uni-graz.at/"
 
 
-d3.json("/src/data/protokollauswertung.json").then( data => {
+d3.json("/rtavis/src/data/protokollauswertung.json").then( data => {
   console.log("data: ", data);
 
     //make grid
