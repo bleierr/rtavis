@@ -1,0 +1,23 @@
+#datavis{
+    width:  40%
+}
+
+#infotext-container{
+    margin-top: 75px;
+    width: 45%;
+    height: 650px;
+    overflow: scroll;
+    border: 1px solid #ccc;
+    padding: 0 2rem;
+    
+}
+
+
+#infotext{
+    
+    
+}
+
+#selectButton{
+    margin-left: 200px;
+}

@@ -1,9 +1,11 @@
 const gams = "https://gams.uni-graz.at/"
+//console.log(data[0]);
 
 
 d3.json("/src/data/protokollauswertung.json").then( data => {
-  console.log("data: ", data);
+    console.log("data: ", data);
 
+    
     //make grid
 
     const getDaysArray = function(start, end) {
@@ -114,10 +116,9 @@ d3.json("/src/data/protokollauswertung.json").then( data => {
               .call(d3.axisLeft(y));
 
 
-    // Build color scale
-              var myColor = d3.scaleLinear()
-                .range(["white","blue", "#46505E"])
-                .domain([0.0000001,15, 50])        
+    var myColor = d3.scaleLinear()
+              .range(["white","blue", "#46505E"])
+              .domain([0.0000001,15, 50])        
 
     const infotext =  d3.select("#infotext").text(d.id);
 
@@ -177,7 +178,7 @@ d3.json("/src/data/protokollauswertung.json").then( data => {
 
 
         // List of groups (here I have one group per column)
-        var allGroup = ["Alle Herrschaften"].concat([... new Set(d3.map(data, function(d){return (d) ? d.herrschaft.trim(' ') : '' }).values())].sort())
+        var allGroup = ["Alle Gremien"].concat([... new Set(d3.map(data, function(d){return (d) ? d.gremium.trim(' ') : '' }).values())].sort())
 
 
         // add the options to the button
@@ -220,10 +221,10 @@ d3.json("/src/data/protokollauswertung.json").then( data => {
       // Create new data with the selection?
       console.log("Data", data)
       let filteredData = []
-      if (selectedGroup==="Alle Herrschaften"){
+      if (selectedGroup==="Alle Gremien"){
         filteredData = data
       }else{
-        filteredData = data.filter(function(d){return d.herrschaft == selectedGroup })
+        filteredData = data.filter(function(d){return d.gremium == selectedGroup })
       }
 
       console.log("Filtered Data", filteredData)
@@ -277,5 +278,8 @@ d3.json("/src/data/protokollauswertung.json").then( data => {
       
         update(selectedOption)
     })
+
+
+
 
 })
