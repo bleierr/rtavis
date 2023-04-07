@@ -137,9 +137,7 @@ d3.json("../data/Parallelueberlieferungen.json").then( data => {
       .keys(subgroups)
       (sgc.map((h)=>h.herrschaft)) 
 
-  /*  var stackedData = d3.stack()
-    .keys(subgroups)
-    (data) */
+
 
       // Add Y axis
       const y = d3.scaleBand()
@@ -164,15 +162,7 @@ d3.json("../data/Parallelueberlieferungen.json").then( data => {
       .domain(groups)
       .range(colorRange)
 
-      //stack the data? --> stack per subgroup
-      /*const stackedData = d3.stack()
-      .keys(subgroups)
-      (data)*/
-
-
-
-
-
+     
 
        // Tooltip Funktionalität
 
@@ -190,10 +180,12 @@ d3.json("../data/Parallelueberlieferungen.json").then( data => {
        .style("padding", "5px")
 
     const mouseover = function(event, d) {
-        var subgroupName = d3.select(this.parentNode).datum().key;
-        var subgroupValue = d.data[subgroupName];
+        const subgroupName = d3.select(this.parentNode).datum().key;
+        const subgroupValue = d.data[subgroupName];
+        const textName = d.data.id;
+        console.log(d)
       tooltip
-          .html("Herrschaft: " + subgroupName + "<br>" + "Anzahl: " + subgroupValue)
+          .html(textName + "<br><br>Herrschaft: " + subgroupName + "<br>" + "Anzahl: " + subgroupValue)
           .style("opacity", 1)
     }
     const mousemove = function(event, d) {
@@ -212,6 +204,7 @@ console.log("StackedData: ", stackedData)
 
   // Show the bars
   svg.append("g")
+  .attr("class", "bar-segments")
     .selectAll("g")
     // Enter in the stack data = loop key per key = group per group
     .data(stackedData)
@@ -233,45 +226,36 @@ console.log("StackedData: ", stackedData)
  // A function that update the chart
  function update(selectedGroup) {
 
-  // Create new data with the selection?
-  
-  let filteredData = []
-  if (selectedGroup==="Alle Herrschaften"){
-    filteredData = data
-  }else{
-    filteredData = data.filter(function(d){return d.herrschaft == selectedGroup })
-  }
-
-  console.log("selected group", selectedGroup)
-
-  console.log("Filtered Data", filteredData)
-  // Give these new data to update line
-
-  d3.selectAll('rect.bar').remove()
-
-  d3.select("#infotext").text("");
-
-  svg.selectAll("bar")
-          .data(createTextsObj(filteredData))
-          .enter()
-          .append("rect")
-          .attr("class", "bar")
-          .attr("x", 0)
-          .attr("y", function(d) { return y(d.id); })
-          .attr("width", function(d) { return  x(d3.sum(Object.values(d.herrschaft))) ; })
-          .attr("height", 20)
-          .attr("fill", function(d) { return color(d.key); })
-          .on("mouseover", mouseover)
-          .on("mousemove", mousemove)
-          .on("mouseleave", mouseleave)
+  // add fill-opacity if not selected
  
+  d3.selectAll('.bar-segments').remove()
+
+  svg.append("g")
+  .attr("class", "bar-segments")
+  .selectAll("g")
+  // Enter in the stack data = loop key per key = group per group
+  .data(stackedData)
+  .enter().append("g")
+  .attr("fill", (d) => color(d.key))
+  .attr("fill-opacity", (d) =>(d.key===selectedGroup || selectedGroup === "Alle Herrschaften" ) ? "100%" : "20%")
+    .selectAll("rect")
+    // enter a second time = loop subgroup per subgroup to add all rectangles
+    .data((d) => d)
+    .enter().append("rect")
+      .attr("y", (d) =>  y(d.data.id))
+      .attr("x", (d) =>  x(d[0]))
+      .attr("height", 20)
+      .attr("width",(d) =>  x(d[1]-d[0]))
+      .on("mouseover", mouseover)
+      .on("mousemove", mousemove)
+      .on("mouseleave", mouseleave)
 
 }
 
 
 
     // List of groups (here I have one group per column)
-    var allGroup = ["Alle Herrschaften"].concat([... new Set(d3.map(data, function(d){return (d) ? d.herrschaft.trim(' ') : '' }).values())].sort())
+    const allGroup = ["Alle Herrschaften"].concat([... new Set(d3.map(data, function(d){return (d) ? d.herrschaft.trim(' ') : '' }).values())].sort())
 
 
     // add the options to the button
@@ -287,320 +271,13 @@ console.log("StackedData: ", stackedData)
       // When the button is changed, run the updateChart function
       d3.select("#selectButton").on("change", function(d) {
           // recover the option that has been chosen
-          var selectedOption = d3.select(this).property("value")
+          const selectedOption = d3.select(this).property("value")
       
       
           update(selectedOption)
       })
 
 
-
-
-
-
-
-
-
-
     })
 
-    //.attr("width", function(d) { return  x(d3.sum(Object.values(d.herrschaft))) ; })
-
-    
-
-      /*   console.log("data: ", data);
-
-
-        const subgroups = Object.keys(data[0])
-
-        console.log("subgroup: ", subgroups)
-
-        const groups = Array.from(new Set(data.map((d) => d.title)))
-
-        const herrschaft = Array.from(new Set(data.map((d) => d.herrschaft)))
-
-        console.log("group: ", groups)
-
-        console.log("herrschaft: ", herrschaft)
-        
-        const createTextsObj = (data) => {
-
-                const textsObj = {}
-
-                for (let i = 0; i < data.length; i++){
-                    if(data[i]){
-                            if(textsObj.hasOwnProperty(data[i].title)){
-                                textsObj[data[i].title].push(data[i])
-                            }else{
-                                textsObj[data[i].title] = []
-                                textsObj[data[i].title].push(data[i])
-                            }
-                        
-                    }
-
-                } 
-
-                console.log(Object.keys(textsObj).sort())
-
-                let textsArr = [];
-
-                for (const [i, d] of Object.keys(textsObj).entries()){
-                    const o = {};
-                    //o.id = d;
-                    //o.id = i;
-                    o.versions = textsObj[d]
-                    o.title = d
-                    o.versionsCount = textsObj[d].length
-                    textsArr.push(o)
-                }
-
-                const stackedData = []
-
-                for (const [i, d] of Object.keys(textsObj).entries()){
-                    const o = {};
-                    
-                    for (let i = 0; i < Object.keys(textsObj).length; i++){ 
-
-                    o.versions = textsObj[d]
-                    o.title = d
-                    o.versionsCount = textsObj[d].length
-                    textsArr.push(o)
-                    }
-                }
-
-                textsArr = textsArr.sort((a,b) => (a.versionsCount > b.versionsCount) ? 1 : ((b.versionsCount > a.versionsCount) ? -1 : 0))
-
-                for (let i = 0; i < textsArr.length; i++) 
-                    { 
-                    textsArr[i].id = textsArr.length - i
-                    }
-                    
-                return textsArr
-
-            }
-
-    const textsArr = createTextsObj(data)
-
-
-        // set the dimensions and margins of the graph
-        const margin = {top: 70, right: 30, bottom: 200, left: 100},
-            width = 1000 - margin.left - margin.right,
-            height = 5000 - margin.top - margin.bottom;
-
-        // append the svg object to the body of the page
-        const svg = d3.select("#datavis")
-            .append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform",
-                    "translate(" + margin.left + "," + margin.top + ")");
-
-        const g = svg.append("g")
-                .attr("transform", `translate(${margin.left}, ${margin.top})`);
-
-
-                //add x axis
-        const x = d3.scaleLinear()
-                .domain([0, 70])
-                .range([ 0, width ]);
-                
-
-        svg.append("g")
-                .call(d3.axisTop(x))
-                .selectAll("text")
-                //.attr("transform", "translate(-10,0)rotate(-45)")
-                .style("text-anchor", "end");
-
-
-        g.append("text")
-                    .attr("class", "x axis-label")
-                    .attr("x", 250)
-                    .attr("y", -100)
-                    //.attr("text-anchor", "middle")
-                    .text("Anzahl der Paralellüberlieferungen").style("font-size","14px");
-        
-                
-                // Add Y axis
-        const y = d3.scaleBand()
-                .domain(groups)
-                .range([ height, 0])
-                .padding(0.01);
-
-
-        svg.append("g")
-                .attr("transform", "translate(0, 0)")
-                .call(d3.axisLeft(y));
-
-        g.append("text")
-                .attr("class", "y axis-label")
-                .attr("x", -250)
-                .attr("y", -140)
-                //.attr("text-anchor", "middle")
-                .attr("transform", "rotate(-90)")
-                .text("Titel von RTA Texten").style("font-size","14px");
-                
-
-        // Tooltip Funktionalität
-
-        const tooltip = d3.select("#datavis")
-                .append("div")
-                .style("opacity", 1)
-                .attr("class", "tooltip")
-                .style("background-color", "white")
-                .style("border", "solid")
-                .style("position", "absolute")
-                //.style("width", "200px")
-                //.style("height", "200px")
-                .style("border-width", "2px")
-                .style("border-radius", "5px")
-                .style("padding", "5px")
-
-        const mouseover = function(event, d) {
-                tooltip.style("opacity", 1)
-                }
-        const mousemove = function(event, d) {
-            tooltip
-            .html(()=>{            
-                return d.title;
-            })
-            .style("left", (event.pageX + 30) + "px") //
-            .style("top", (event.pageY) + "px") //
-            }
-        const mouseleave = function(event, d) {
-            tooltip.style("opacity", 0)
-            }
-
-        
-        const subgroupsCount = groups.map((group)=>{
-            const o = {}
-            o["id"] = group
-            o["group"] = data.filter((d) => d.title === group )
-            return o
-        })
-
-        const sgc = subgroupsCount.map((s)=>{
-            
-            const obj = {}
-            obj["id"] = s.id
-            obj["herrschaft"] = {}
-
-            for (let i = 0; i < herrschaft.length; i++){
-                let len = 0
-                let hits = s["group"].filter((o) => o.herrschaft === herrschaft[i])
-                if(hits.length > 0){
-                    len = hits.length
-                }
-                obj["herrschaft"][herrschaft[i]] = len
-                
-            }
-            return obj
-        })
-
-
-
-        console.log("SG count", sgc)
-
-
-        const stackedData = d3.stack()
-            .keys(herrschaft)
-            (sgc.map((h)=>h.herrschaft))
-
-            console.log("stacked data: ", stackedData)
-
-
-           // color palette = one color per subgroup
-        const color = d3.scaleOrdinal()
-           .domain(herrschaft)
-           .range(['#e41a1c','#377eb8','#4daf4a'])
-
-        console.log("stacked data")
-        stackedData.forEach((d)=>{
-            console.log(d)
-            console.log(d.key)
-            console.log(d[1])
-
-        })
-
-                // Bars
-        svg.append("g")
-                .selectAll("g")
-                .data(stackedData)
-                .enter().append("g")
-                .attr("fill", function(d) { return color(d.key); })
-                .selectAll("rect")
-                .data(function(d) { return d; })
-                .enter().append("rect")
-                    .attr("x", function(d) { return y(d.key); })
-                    .attr("y", function(d) { return x(d[1]); })
-                    .attr("height", function(d) { return x(d[0]) - x(d[1]); })
-                    .attr("width",y.bandwidth())
-
-     
-        
-
-
-         // A function that update the chart
-    function update(selectedGroup) {
-
-        // Create new data with the selection?
-        
-        let filteredData = []
-        if (selectedGroup==="Alle Herrschaften"){
-          filteredData = data
-        }else{
-          filteredData = data.filter(function(d){return d.herrschaft == selectedGroup })
-        }
   
-        console.log("selected group", selectedGroup)
-
-        console.log("Filtered Data", filteredData)
-        // Give these new data to update line
-  
-        d3.selectAll('rect.bar').remove()
-  
-        d3.select("#infotext").text("");
-  
-        svg.selectAll("bar")
-                .data(createTextsObj(filteredData))
-                .enter()
-                .append("rect")
-                .attr("class", "bar")
-                .attr("x", 0)
-                .attr("y", function(d) { return y(d.id); })
-                .attr("width", function(d) { return  x(d3.sum(Object.values(d.herrschaft))) ; })
-                .attr("height", 20)
-                .attr("fill", function(d) { return color(d.key); })
-                .on("mouseover", mouseover)
-                .on("mousemove", mousemove)
-                .on("mouseleave", mouseleave)
-       
-      
-      }
-
-
-
-       // List of groups (here I have one group per column)
-       var allGroup = ["Alle Herrschaften"].concat([... new Set(d3.map(data, function(d){return (d) ? d.herrschaft.trim(' ') : '' }).values())].sort())
-
-
-       // add the options to the button
-       d3.select("#selectButton")
-         .selectAll('myOptions')
-           .data(allGroup)
-         .enter()
-         .append('option')
-         .text(function (d) { return d; }) // text showed in the menu
-         .attr("value", function (d) { return d; })
-
-
-        // When the button is changed, run the updateChart function
-        d3.select("#selectButton").on("change", function(d) {
-            // recover the option that has been chosen
-            var selectedOption = d3.select(this).property("value")
-        
-        
-            update(selectedOption)
-        })
-
- */
