@@ -41,9 +41,6 @@ const colorScheme = [
   "#d3277a", "#2ca1ae", "#dba2e6"
 ]
 
-// /rtavis/src
-//d3.json("../data/test.json").then( data => {
-
 // set the dimensions and margins of the graph
 const margin = {top: 50, right: 1400, bottom: 20, left: 20},
     width = 2300 - margin.left - margin.right,
@@ -63,18 +60,11 @@ d3.json("../data/Parallelueberlieferungen.json").then( data => {
 
   // List of subgroups = header of the csv files = soil condition here
   
-  //var subgroups = data.columns.slice(1)
 
-  console.log(data)
-
-  //const subgroups = Object.keys(data[0]).slice(1)
   const subgroups = Array.from(new Set(data.map((d) => d.herrschaft)))
 
-  console.log("Sub-groups:", subgroups)
-
   // List of groups = species here = value of the first column called group -> I show them on the X axis
-  //const groups = data.map((d)=>d.group)
-
+  
   const groups = Array.from(new Set(data.map((d) => d.title)))
 
   console.log("Groups:", groups.length)
