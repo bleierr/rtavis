@@ -46,6 +46,8 @@ d3.json("/rtavis/src/data/protokollauswertung.json").then( data => {
 
     const makeGridObj = (gridMap, data) => {
 
+      console.log("Data: ", data)
+
         const gridObj = {}
 
         for (w in gridMap){
@@ -70,6 +72,7 @@ d3.json("/rtavis/src/data/protokollauswertung.json").then( data => {
           }
         }
 
+        console.log("Gridobj: ", gridObj)
         return gridObj
 
     }
@@ -125,8 +128,9 @@ d3.json("/rtavis/src/data/protokollauswertung.json").then( data => {
               let t = "Tag: " + d.id + "<br>"
               if (d.hasOwnProperty("count")){
                 t = t + "Anzahl: " + d.count + "<br><ol>"
-                t = t + d.days.map((day) =>  `<li><b>${day.title}</b><br><a href="${gams+day.pid}" target="_blank">${day.pid}</a>, ${day.archiv}, ${day.gremium}`).join("</li>")
-                t = t + "Anzahl: " + d.count + "</ol><br>"
+                t = t + d.days.map((day) =>  `<li><b>${day.title}</b><br>${(day.folio_from===day.folio_to) ? day.folio_from : day.folio_from.concat("-", day.folio_to)}, 
+                <a href="${gams+day.pid}" target="_blank">${day.pid}</a>, ${day.archiv}, ${day.gremium}`).join("</li>")
+                t = t + "</ol><br>"
               }
 
               d3.selectAll(".cell")
@@ -190,9 +194,6 @@ d3.json("/rtavis/src/data/protokollauswertung.json").then( data => {
           .attr("value", function (d) { return d; })
 
 
-
-
-          
 
     svg.selectAll()
               .data(Object.values(makeGridObj(dayMap, data)), function(d) {return d.weekday+':'+d.week;})
