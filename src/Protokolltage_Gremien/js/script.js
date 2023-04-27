@@ -2,7 +2,7 @@ const gams = "https://gams.uni-graz.at/"
 //console.log(data[0]);
 
 
-d3.json("/data/protokollauswertung.json").then( data => {
+d3.json("../data/protokollauswertung.json").then( data => {
     console.log("data: ", data);
 
     

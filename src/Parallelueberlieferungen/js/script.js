@@ -70,7 +70,7 @@ const svg = d3.select("#datavis")
           "translate(" + margin.left + "," + margin.top + ")");
 
 // Parse the Data
-d3.json("/data/parallelueberlieferungen.json").then( data => {
+d3.json("../data/parallelueberlieferungen.json").then( data => {
 
   // List of subgroups = header of the csv files = soil condition here
   
