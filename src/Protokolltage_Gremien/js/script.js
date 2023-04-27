@@ -2,7 +2,7 @@ const gams = "https://gams.uni-graz.at/"
 //console.log(data[0]);
 
 
-d3.json("/rtavis/src/data/protokollauswertung.json").then( data => {
+d3.json("/data/protokollauswertung.json").then( data => {
     console.log("data: ", data);
 
     
@@ -85,8 +85,11 @@ d3.json("/rtavis/src/data/protokollauswertung.json").then( data => {
           width = 500 - margin.left - margin.right,
           height = 800 - margin.top - margin.bottom;
 
+
+
+const makeSvg = (divId) => {         
     // append the svg object to the body of the page
-    const svg = d3.select("#datavis")
+    const svg = d3.select(divId)
               .append("svg")
               .attr("width", width + margin.left + margin.right)
               .attr("height", height + margin.top + margin.bottom + 50)
@@ -118,7 +121,7 @@ d3.json("/rtavis/src/data/protokollauswertung.json").then( data => {
 
     var myColor = d3.scaleLinear()
               .range(["white","blue", "#46505E"])
-              .domain([0.0000001,15, 50])        
+              .domain([0.0000001,15, 60])        
 
     const infotext =  d3.select("#infotext").text(d.id);
 
@@ -145,7 +148,7 @@ d3.json("/rtavis/src/data/protokollauswertung.json").then( data => {
 
       // Tooltip Funktionalität
 
-      const tooltip = d3.select("#datavis")
+      const tooltip = d3.select(divId)
               .append("div")
               .style("opacity", 1)
               .attr("class", "tooltip")
@@ -191,10 +194,6 @@ d3.json("/rtavis/src/data/protokollauswertung.json").then( data => {
           .text(function (d) { return d; }) // text showed in the menu
           .attr("value", function (d) { return d; })
 
-
-
-
-          
 
     svg.selectAll()
               .data(Object.values(makeGridObj(dayMap, data)), function(d) {return d.weekday+':'+d.week;})
@@ -269,6 +268,8 @@ d3.json("/rtavis/src/data/protokollauswertung.json").then( data => {
             .style("text-anchor", "middle")
             .text("Woche im Jahr 1576");
 
+   
+
 
 
     // When the button is changed, run the updateChart function
@@ -280,7 +281,71 @@ d3.json("/rtavis/src/data/protokollauswertung.json").then( data => {
         update(selectedOption)
     })
 
+  } //End makeSvg
+
+  makeSvg("#datavis")
+  makeSvg("#datavis2")
 
 
 
-})
+  const svgLegend = d3.select("#legend")
+                      .append("svg")
+                      .attr("width", 500)
+                      .attr("height", 50)
+                      
+  const gradient = svgLegend.append("defs")
+                      .append("linearGradient")
+                      .attr("id", "gradient");
+  
+            gradient.append("stop")
+                      .attr("stop-color","white")
+                      .attr("offset","0%")
+                     
+            gradient.append("stop")
+                       .attr("stop-color","blue")
+                       .attr("offset","25%");
+
+            gradient.append("stop")
+                       .attr("stop-color","#46505E")
+                       .attr("offset","100%");
+                       
+
+                       0.0000001,15, 50
+      
+    svgLegend.append("rect")
+                .attr("href","#gradient")
+                .attr("x","200")
+                .attr("width","200")
+                .attr("height","20")
+                .attr("fill", "url(#gradient)");
+                
+    svgLegend.append("text")
+            .attr("x","100")
+            .attr("y","20")
+            .text("Legend: ")
+
+
+            svgLegend.append("text")
+            .attr("x","200")
+            .attr("y","30")
+            .attr("font-size","smaller")
+            .text("0")
+
+            svgLegend.append("text")
+            .attr("x","290")
+            .attr("y","30")
+            .attr("font-size","smaller")
+            .text("30")
+
+            svgLegend.append("text")
+            .attr("x","380")
+            .attr("y","30")
+            .attr("font-size","smaller")
+            .text("50+")
+
+
+
+ })
+
+
+

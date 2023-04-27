@@ -21,3 +21,11 @@
 #selectButton{
     margin-left: 200px;
 }
+
+.parent{
+    font-weight: bolder;
+}
+.child{
+    font-size: 0.9rem;
+    font-style: italic;
+}

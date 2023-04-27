@@ -1,7 +1,7 @@
 const gams = "https://gams.uni-graz.at/"
 
 const colorScheme = [
-  "#63b598", "#8a96c6", "#9685eb", "#a48a9e", "#c6e1e8", "#648177", "#0d5ac1",
+  "#63b598", "#8a96c6", "#9685eb", "#a48a9e", "#dba2e6", "#648177", "#0d5ac1",
   "#f205e6", "#1c0365", "#14a9ad", "#4ca2f9", "#a4e43f", "#d298e2", "#6119d0",
   "#d2737d", "#c0a43c", "#f2510e", "#651be6", "#79806e", "#61da5e", "#cd2f00",
   "#9348af", "#01ac53", "#c5a4fb", "#996635", "#b11573", "#4bb473", "#75d89e",
@@ -38,8 +38,22 @@ const colorScheme = [
   "#2d7d2a", "#07d7f6", "#5cdd87", "#a259a4", "#e4ac44", "#1bede6", "#8798a4",
   "#d7790f", "#b2c24f", "#de73c2", "#d70a9c", "#88e9b8", "#c2b0e2", "#86e98f",
   "#ae90e2", "#1a806b", "#436a9e", "#0ec0ff", "#f812b3", "#b17fc9", "#8d6c2f",
-  "#d3277a", "#2ca1ae", "#dba2e6"
+  "#d3277a", "#2ca1ae"
 ]
+
+
+const herrschaftMapping = [
+  {"parent": "Kurfürsten, geistliche", "children": ["Mainz, Kurfürstentum/Erzstift"]},
+  {"parent":"Kurfürsten, weltliche", "children": ["Brandenburg, Kurfürstentum", "Pfalz, Kurfürstentum", "Sachsen, Kurfürstentum" ]},
+  {"parent":"Fürsten, weltliche/Grafen und Herren", "children": ["Haus Österreich/Kaiser", "Haus Österreich/Innerösterreich", "Bayern, Herzogtum", "Pfalz-Neuburg, Fürstentum",
+  "Braunschweig-Wolfenbüttel, Herzogtum", "Württemberg, Herzogtum", "Hessen, Landgrafschaften", "Baden, Markgrafschaften", "Nassau, Grafschaften (Wetterauer Grafenkollegium)",
+  "Hanau, Grafschaften (Wetterauer Grafenkollegium)"]},
+  {"parent":"Fürsten, geistliche/Prälaten und Äbtissinnen", "children":["Eichstätt, Hochstift", "Augsburg, Hochstift", "Würzburg, Hochstift"]},
+  {"parent":"Reichsstädte", "children": ["Köln, Reichsstadt", "Lübeck, Reichsstadt", "Augsburg, Reichsstadt", "Nördlingen, Reichsstadt", "Nürnberg, Reichsstadt", "Ulm, Reichsstadt", "Schweinfurt, Reichsstadt"]}
+]
+
+
+
 
 // set the dimensions and margins of the graph
 const margin = {top: 50, right: 1400, bottom: 20, left: 20},
@@ -56,7 +70,7 @@ const svg = d3.select("#datavis")
           "translate(" + margin.left + "," + margin.top + ")");
 
 // Parse the Data
-d3.json("../data/parallelueberlieferungen.json").then( data => {
+d3.json("/data/parallelueberlieferungen.json").then( data => {
 
   // List of subgroups = header of the csv files = soil condition here
   
@@ -141,6 +155,7 @@ d3.json("../data/parallelueberlieferungen.json").then( data => {
 
 
       const colorRange = colorScheme.slice(0,groups.length)
+
       console.log("color range: ", colorRange)
 
       console.log("subgroups count: ", subgroups)
@@ -192,14 +207,34 @@ d3.json("../data/parallelueberlieferungen.json").then( data => {
 
 console.log("StackedData: ", stackedData)
 
+// create max-data shadow
+svg.append("g")
+  .selectAll("g")
+  // Enter in the stack data = loop key per key = group per group
+  .data(stackedData)
+  .enter().append("g")
+    .attr("fill", "#ccc")
+    .selectAll("rect")
+    // enter a second time = loop subgroup per subgroup to add all rectangles
+    .data((d) => d)
+    .enter().append("rect")
+      .attr("y", (d) =>  y(d.data.id))
+      .attr("x", (d) =>  x(d[0]))
+      .attr("height", 20)
+      .attr("width",(d) =>  x(d[1]-d[0]))
+
+
+
+
   // Show the bars
   svg.append("g")
   .attr("class", "bar-segments")
     .selectAll("g")
-    // Enter in the stack data = loop key per key = group per group
+        // Enter in the stack data = loop key per key = group per group
     .data(stackedData)
     .enter().append("g")
       .attr("fill", (d) => color(d.key))
+      
       .selectAll("rect")
       // enter a second time = loop subgroup per subgroup to add all rectangles
       .data((d) => d)
@@ -212,6 +247,8 @@ console.log("StackedData: ", stackedData)
         .on("mousemove", mousemove)
         .on("mouseleave", mouseleave)
 
+   
+
 
  // A function that update the chart
  function update(selectedGroup) {
@@ -220,14 +257,34 @@ console.log("StackedData: ", stackedData)
  
   d3.selectAll('.bar-segments').remove()
 
+  let selection = []
+
+  if (herrschaftMapping.map((item)=>item.parent).includes(selectedGroup)){
+    selection = herrschaftMapping.filter((item)=>item.parent===selectedGroup)[0].children
+    
+  }
+  else{
+    selection.push(selectedGroup)
+  }
+
+  console.log ("selection", selection)
+
+
+  const updatedStackedData = d3.stack()
+      .keys(selection)
+      (sgc.map((h)=>h.herrschaft))
+
+
+   console.log ("updatedStackedData: ", updatedStackedData)
+
   svg.append("g")
   .attr("class", "bar-segments")
   .selectAll("g")
   // Enter in the stack data = loop key per key = group per group
-  .data(stackedData)
+  .data(updatedStackedData)
   .enter().append("g")
   .attr("fill", (d) => color(d.key))
-  .attr("fill-opacity", (d) =>(d.key===selectedGroup || selectedGroup === "Alle Herrschaften" ) ? "100%" : "20%")
+  .attr("fill-opacity", (d) =>(selection.includes(d.key) || selection.includes("Alle überlieferten Herrschaften") ) ? "100%" : "0%")
     .selectAll("rect")
     // enter a second time = loop subgroup per subgroup to add all rectangles
     .data((d) => d)
@@ -245,8 +302,11 @@ console.log("StackedData: ", stackedData)
 
 
     // List of groups (here I have one group per column)
-    const allGroup = ["Alle Herrschaften"].concat([... new Set(d3.map(data, function(d){return (d) ? d.herrschaft.trim(' ') : '' }).values())].sort())
+    //const allGroup = ["Alle überlieferten Herrschaften"].concat([... new Set(d3.map(data, function(d){return (d) ? d.herrschaft.trim(' ') : '' }).values())].sort())
 
+    const allGroup = [].concat.apply(["Alle überlieferten Herrschaften"],herrschaftMapping.map((item)=>[item.parent].concat(item.children)))
+
+    console.log("allGroup", allGroup)
 
     // add the options to the button
     d3.select("#selectButton")
@@ -254,6 +314,7 @@ console.log("StackedData: ", stackedData)
         .data(allGroup)
       .enter()
       .append('option')
+      .attr("class",  (d) => { return (["Kurfürsten, geistliche", "Kurfürsten, weltliche", "Fürsten, weltliche/Grafen und Herren", "Fürsten, geistliche/Prälaten und Äbtissinnen", "Reichsstädte"].includes(d) ?  "parent" : "child") })
       .text(function (d) { return d; }) // text showed in the menu
       .attr("value", function (d) { return d; })
 
