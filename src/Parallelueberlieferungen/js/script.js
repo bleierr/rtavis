@@ -43,9 +43,10 @@ const colorScheme = [
 
 
 const herrschaftMapping = [
+  {"parent": "Haus Österreich/Kaiser", "children": ["Haus Österreich/Kaiser"]},
   {"parent": "Kurfürsten, geistliche", "children": ["Mainz, Kurfürstentum/Erzstift"]},
   {"parent":"Kurfürsten, weltliche", "children": ["Brandenburg, Kurfürstentum", "Pfalz, Kurfürstentum", "Sachsen, Kurfürstentum" ]},
-  {"parent":"Fürsten, weltliche/Grafen und Herren", "children": ["Haus Österreich/Kaiser", "Haus Österreich/Innerösterreich", "Bayern, Herzogtum", "Pfalz-Neuburg, Fürstentum",
+  {"parent":"Fürsten, weltliche/Grafen und Herren", "children": ["Haus Österreich/Innerösterreich", "Bayern, Herzogtum", "Pfalz-Neuburg, Fürstentum",
   "Braunschweig-Wolfenbüttel, Herzogtum", "Württemberg, Herzogtum", "Hessen, Landgrafschaften", "Baden, Markgrafschaften", "Nassau, Grafschaften (Wetterauer Grafenkollegium)",
   "Hanau, Grafschaften (Wetterauer Grafenkollegium)"]},
   {"parent":"Fürsten, geistliche/Prälaten und Äbtissinnen", "children":["Eichstätt, Hochstift", "Augsburg, Hochstift", "Würzburg, Hochstift"]},
