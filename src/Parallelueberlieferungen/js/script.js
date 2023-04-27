@@ -315,7 +315,7 @@ svg.append("g")
         .data(allGroup)
       .enter()
       .append('option')
-      .attr("class",  (d) => { return (["Kurfürsten, geistliche", "Kurfürsten, weltliche", "Fürsten, weltliche/Grafen und Herren", "Fürsten, geistliche/Prälaten und Äbtissinnen", "Reichsstädte"].includes(d) ?  "parent" : "child") })
+      .attr("class",  (d) => { return (["Kaiser", "Kurfürsten, geistliche", "Kurfürsten, weltliche", "Fürsten, weltliche/Grafen und Herren", "Fürsten, geistliche/Prälaten und Äbtissinnen", "Reichsstädte"].includes(d) ?  "parent" : "child") })
       .text(function (d) { return d; }) // text showed in the menu
       .attr("value", function (d) { return d; })
 
