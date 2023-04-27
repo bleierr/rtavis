@@ -181,16 +181,39 @@ const makeSvg = (divId) => {
       }
 
 
+      const selectionMap = {
+
+        "Kurfürstenrat" : ["Kurfürstenrat"],
+        "Fürstenrat" : ["Fürstenrat"],
+        "Städterat" : ["Städterat"], 
+        "CA-Stände" : ["CA-Stände"], 
+        "Katholische Stände": ["Katholische Stände"], 
+        "Alle Gremien mit Beteiligung von Kurfürsten" : ["Kurfürstenrat", "CA-Stände", "Katholische Stände"],
+        "Alle Gremien mit Beteiligung von Fürsten" : ["Fürstenrat", "CA-Stände", "Katholische Stände"],
+        "Alle Gremien mit Beteiligung von Reichsstädten" : ["Städterat", "CA-Stände", "Katholische Stände"],
+        "Alle Gremien mit Beteiligung von Kurfürsten oder Fürsten" : ["Kurfürstenrat", "Fürstenrat"],
+        "Alle Gremien mit Beteiligung der CA-Stände" : ["Kurfürstenrat", "Fürstenrat", "Städterat", "CA-Stände"],
+        "Alle Gremien mit Beteiligung der katholischen Stände" : ["Kurfürstenrat", "Fürstenrat", "Städterat", "CA-Stände", "Katholische Stände"],
+        "Alle Gremien mit Beteiligung des ksl. Geheimen Rates" : ["interne Sitzungen kaiserlicher Geheimer Rat"],
+        "Sonstige" : ["Sonstiges"]
+      }
+
+
         // List of groups (here I have one group per column)
-        var allGroup = ["Alle Gremien"].concat([... new Set(d3.map(data, function(d){return (d) ? d.gremium.trim(' ') : '' }).values())].sort())
+        //const allGroup = ["Alle Gremien"].concat([... new Set(d3.map(data, function(d){return (d) ? d.gremium.trim(' ') : '' }).values())].sort())
+
+        const allGroup = ["Alle Gremien"].concat(Object.keys(selectionMap))
+
+        console.log("allgroup:", allGroup)
 
 
         // add the options to the button
         d3.select("#selectButton")
-          .selectAll('myOptions')
+          .selectAll('.sectionOptions')
             .data(allGroup)
           .enter()
           .append('option')
+          .attr("class", "sectionOptions")
           .text(function (d) { return d; }) // text showed in the menu
           .attr("value", function (d) { return d; })
 
@@ -224,7 +247,7 @@ const makeSvg = (divId) => {
       if (selectedGroup==="Alle Gremien"){
         filteredData = data
       }else{
-        filteredData = data.filter(function(d){return d.gremium == selectedGroup })
+        filteredData = data.filter(function(d){ return selectionMap[selectedGroup].includes(d.gremium) })
       }
 
       console.log("Filtered Data", filteredData)
@@ -310,7 +333,6 @@ const makeSvg = (divId) => {
                        .attr("offset","100%");
                        
 
-                       0.0000001,15, 50
       
     svgLegend.append("rect")
                 .attr("href","#gradient")
