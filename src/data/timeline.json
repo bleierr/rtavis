@@ -1,0 +1,19 @@
+[
+        {
+        "pid":"o:rta1576.adasg2#a2.1.2.29",
+        "text":"Testobj 1",
+        "datetype":"Praesentatum",
+        "date":"1576-06-23",
+        "title":"Städterat"
+                         
+        }, 
+        {
+        "pid":"o:rta1576.adasg2#a2.1.2.25",
+        "text":"Testobj 2",
+        "datetype":"Lectum",
+        "date":"1576-06-25",
+        "title":"FR-Protokoll, angefertigt für den Bf. von Augsburg, wohl verfasst vom Reichstagsgesandten des Propsts von Ellwangen, Dr. Johann Schencking, Domherr in Augsburg, der beim Reichstag auch für den Bf. von Augsburg wirkte"
+                                         
+        }
+
+]

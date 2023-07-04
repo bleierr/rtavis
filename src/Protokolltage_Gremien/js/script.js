@@ -344,7 +344,7 @@ const makeSvg = (divId) => {
     svgLegend.append("text")
             .attr("x","100")
             .attr("y","20")
-            .text("Legend: ")
+            .text("Legende: ")
 
 
             svgLegend.append("text")
