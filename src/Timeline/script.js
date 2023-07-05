@@ -1,34 +1,38 @@
-$(document).ready(function() {
-  $('[data-toggle="popover"]').popover({
-    'container': '#pf-timeline',
-    'placement': 'top'
-  });
-});
-
-var groupBy = function(xs, key) {
-  return xs.reduce(function(rv, x) {
-    (rv[x[key]] = rv[x[key]] || []).push(x);
-    return rv;
-  }, {});
-};
-
-$(document).on('click', '.drop', function () {$(this).popover('show'); });
-
-$(document).on('click', '.grid', function () {$('[data-toggle="popover"]').popover('hide');});
-
-const ONE_HOUR = 60 * 60 * 1000,
-      ONE_DAY = 24 * ONE_HOUR,
-      ONE_WEEK = 7 * ONE_DAY,
-      ONE_MONTH = 30 * ONE_DAY,
-      SIX_MONTHS = 6 * ONE_MONTH,
-      ONE_YEAR = 12 * ONE_MONTH;
 
 
-fetch("http://glossa.uni-graz.at/archive/objects/query:rta1576.timeline/methods/sdef:Query/getJSON", {
+
+/* fetch("https://glossa.uni-graz.at/archive/objects/query:rta1576.timeline/methods/sdef:Query/getJSON", {
     headers: {'Accept': 'application/json'}
     })
     .then(res => res.json()) // parse response as JSON (can be res.text() for plain response)
-    .then( (r) => {
+    .then( (r) => {  */
+
+    const r = JSONDATA;
+
+      $(document).ready(function() {
+        $('[data-toggle="popover"]').popover({
+          'container': '#pf-timeline',
+          'placement': 'top'
+        });
+      });
+      
+      var groupBy = function(xs, key) {
+        return xs.reduce(function(rv, x) {
+          (rv[x[key]] = rv[x[key]] || []).push(x);
+          return rv;
+        }, {});
+      };
+      
+      $(document).on('click', '.drop', function () {$(this).popover('show'); });
+      
+      $(document).on('click', '.grid', function () {$('[data-toggle="popover"]').popover('hide');});
+      
+      const ONE_HOUR = 60 * 60 * 1000,
+            ONE_DAY = 24 * ONE_HOUR,
+            ONE_WEEK = 7 * ONE_DAY,
+            ONE_MONTH = 30 * ONE_DAY,
+            SIX_MONTHS = 6 * ONE_MONTH,
+            ONE_YEAR = 12 * ONE_MONTH;
 
       //console.log(r);
 
@@ -74,7 +78,7 @@ fetch("http://glossa.uni-graz.at/archive/objects/query:rta1576.timeline/methods/
 
       var groupedJson = groupBy(resJson, "dateType")
 
-      console.log(groupedJson)
+      //console.log(groupedJson)
 
       //ganz unten eine Zeile mit "alle Daten"
 
@@ -96,7 +100,7 @@ fetch("http://glossa.uni-graz.at/archive/objects/query:rta1576.timeline/methods/
         let d = []
         for (const [k, v] of Object.entries(value)) {
 
-          console.log("value: ", v)
+          //console.log("value: ", v)
 
           let o = {}
           o.date = v.date
@@ -138,6 +142,11 @@ fetch("http://glossa.uni-graz.at/archive/objects/query:rta1576.timeline/methods/
       today = new Date('1577-01-01');
 
     for (var x in json) { //json lives in external file for testing
+
+
+      console.log(json[x].name)
+
+
       data[x] = {};
       data[x].name = json[x].name;
       data[x].data = [];
@@ -147,6 +156,8 @@ fetch("http://glossa.uni-graz.at/archive/objects/query:rta1576.timeline/methods/
         data[x].data[y].details = json[x].data[y].details;
       }
       $('#timeline-selectpicker').append("<option>" + data[x].name + "</option>");
+
+      
       data[x].display = true;
     }
     $('#timeline-selectpicker').selectpicker('selectAll');
@@ -395,9 +406,6 @@ function zoomFilter() {
 
 
 
-})
-  
-
 
 $('#reset-button').click(function() {
   timeline(element);
@@ -416,3 +424,9 @@ $('body').on('click', function (e) {
       }
   });
 });
+
+
+
+//})
+  
+
