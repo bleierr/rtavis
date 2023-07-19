@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0"
+     xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+     xmlns:rng="http://relaxng.org/ns/structure/1.0"
+     xmlns:t="http://www.tei-c.org/ns/1.0"
+     xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl">
+   <teiHeader>
+      <fileDesc>
+         <titleStmt>
+            <title type="main">Compendium Historiae: Corpus Christi College, Ms. 29</title>
+            <author ref="https://viaf.org/viaf/17579848/">Peter of Poitiers</author>
+         </titleStmt>
+         <publicationStmt>
+            <publisher>
+               <ref target="https://uni-tuebingen.de"/>
+               <orgName ref="https://d-nb.info/gnd/36187-2">University of Tübingen</orgName>
+            </publisher>
+            <publisher>
+               <ref target="https://www.uni-wuppertal.de"/>
+               <orgName ref="https://d-nb.info/gnd/64944-2">University of Wuppertal</orgName>
+            </publisher>
+            <publisher>
+               <ref target="https://informationsmodellierung.uni-graz.at"/>
+               <orgName ref="http://d-nb.info/gnd/1137284463">Center for Information Modelling (ZIM), University of Graz</orgName>
+            </publisher>
+            <authority>
+               <ref target="https://uni-tuebingen.de"/>
+               <orgName ref="https://d-nb.info/gnd/36187-2">University of Tübingen</orgName>
+            </authority>
+            <authority>
+               <ref target="https://informationsmodellierung.uni-graz.at"/>
+               <orgName ref="http://d-nb.info/gnd/1137284463">Center for Information Modelling (ZIM), University of Graz</orgName>
+            </authority>
+            <distributor>
+               <ref target="https://gams.uni-graz.at"/>
+               <orgName>
+                    GAMS - Geisteswissenschaftliches Asset Management System
+                  </orgName>
+            </distributor>
+            <availability>
+               <licence n="text" target="https://creativecommons.org/licenses/by/4.0">Creative Commons BY 4.0</licence>
+               <licence n="facsimile"
+                        target="https://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons BY-NC-SA 4.0 </licence>
+            </availability>
+            <pubPlace> Graz/Tübingen/Wuppertal </pubPlace>
+            <date when="2023">2023</date>
+            <idno type="PID" ana="dcterms:identifier">o:chigc.ccc-29</idno>
+            <ref target="info:fedora/context:chigc" type="context"/>
+            <ref target="info:fedora/context:chigc.ed" type="context"/>
+         </publicationStmt>
+         <sourceDesc>
+            <msDesc>
+               <msIdentifier>
+                  <settlement>
+                     <placeName ana="dcterms:location">Cambridge</placeName>
+                     <country ana="dcterms:location">GB</country>
+                  </settlement>
+                  <repository ana="ead:repository">Corpus Christi College</repository>
+                  <idno type="signature" ana="dcterms:identifier">Ms. 29</idno>
+                  <altIdentifier>
+                     <idno type="URI"
+                           corresp="https://parker.stanford.edu/parker/catalog/xj710dc7305"/>
+                  </altIdentifier>
+               </msIdentifier>
+               <msContents>
+                  <msItem xml:id="compendium-historiae" ana="chigc:Item">
+                     <locus facs="https://parker.stanford.edu/parker/catalog/xj710dc7305"
+                            from="vir"
+                            to="xir">vi r - xi r</locus>
+                     <incipit>Considerans hystorie sacre prolixitatem</incipit>
+                     <explicit/>
+                     <author xml:lang="en">Petrus von Poitiers</author>
+                     <title type="uniform" xml:lang="la" ana="rdfs:label">Compendium Historiae</title>
+                     <title type="archival" xml:lang="la">???</title>
+                     <textLang ana="dcterms:language" mainLang="la">Latin</textLang>
+                     <note type="citation"/>
+                     <note type="internal">Migriert von Piggin</note>
+                     <note type="external">Migriert von Piggin, bearbeitet von Worm, Volldigitalisat ist vorhanden, Zoomoption aber nur mit Abo</note>
+                     <note type="not-extended">
+                        <p>Chronic was not extended </p>
+                        <p/>
+                     </note>
+                  </msItem>
+                  <msItem corresp="#xy" type="co-transmission" ana="chigc:Item">
+                     <locus/>
+                     <title ana="rdfs:label">Siebenarmiger Leuchter</title>
+                  </msItem>
+                  <msItem corresp="#xy" type="co-transmission" ana="chigc:Item">
+                     <locus/>
+                     <title ana="rdfs:label">Diagramm: " transitus filiorum israel per mare rubrum"</title>
+                  </msItem>
+                  <msItem corresp="#xy" type="co-transmission" ana="chigc:Item">
+                     <locus/>
+                     <title ana="rdfs:label">6 flügliger Seraph</title>
+                  </msItem>
+                  <msItem corresp="#xy" type="transmission-context" ana="chigc:Item">
+                     <locus/>
+                     <title ana="rdfs:label">Historia Scholastica</title>
+                  </msItem>
+               </msContents>
+               <physDesc>
+                  <objectDesc ana="chigc:manifestationType" form="codex">
+                     <supportDesc ana="dcterms:medium" material="parchment">
+                        <support ana="dc:terms:PhysicalMedium">
+                           <material ana="rdf:type">Parchment</material>
+                        </support>
+                        <extent ana="memo:sizeMeasurement">
+                           <height unit="mm" ana="memo:hasLength" quantity="348">348mm</height>
+                           <width unit="mm" ana="memo:hasWitdh" quantity="250">250mm</width>
+                        </extent>
+                        <condition ana="chigc:condition" type="comp">
+                           <p>complete.</p>
+                        </condition>
+                     </supportDesc>
+                     <layoutDesc>
+                        <layout>Für Pagebreaks?</layout>
+                     </layoutDesc>
+                  </objectDesc>
+                  <decoDesc>
+                     <decoNote type="diagrams" corresp="#compendium-historiae">
+                        <p/>
+                        <figure corresp="#encampments" ana="chigc:diagram">
+                           <label ana="rdfs:label">42 Encampments</label>
+                        </figure>
+                        <figure corresp="#tribes" ana="chigc:diagram">
+                           <label ana="rdfs:label">12 Tribes</label>
+                        </figure>
+                        <figure corresp="#jerusalem" ana="chigc:diagram">
+                           <label ana="rdfs:label">Plan of Jerusalem</label>
+                        </figure>
+                     </decoNote>
+                     <decoNote type="miniatures" corresp="#compendium-historiae">
+                        <figure ana="chigc:Miniature"/>
+                     </decoNote>
+                     <decoNote type="graph" corresp="#compendium-historiae">
+                        <figure ana="chigc:graph"/>
+                     </decoNote>
+                  </decoDesc>
+               </physDesc>
+               <history>
+                  <origin>
+                     <date ana="crm:E52_Time-Span"
+                           notBefore="1200"
+                           notAfter="1225"
+                           type="range">ca. 1200 - 1225</date>
+                  </origin>
+                  <provenance>
+                     <p/>
+                  </provenance>
+               </history>
+               <additional>
+                  <surrogates corresp="https://parker.stanford.edu/parker/catalog/xj710dc7305"
+                              type="metadata"
+                              ana="chigc:description">https://parker.stanford.edu/parker/catalog/xj710dc7305</surrogates>
+               </additional>
+            </msDesc>
+            <listBibl>
+               <bibl/>
+               <bibl/>
+            </listBibl>
+         </sourceDesc>
+      </fileDesc>
+      <revisionDesc status="1">
+         <change when="2023-07-17+02:00">
+            <p>Table-data transformed to TEI-File per Entry with MsDesc</p>
+         </change>
+      </revisionDesc>
+   </teiHeader>
+   <facsimile>
+      <surface n="6r" facs="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vi_R_TC_46/full/1024,/0/default.jpg"> 
+         <!-- every page is a surface-->
+      </surface>
+      <surface n="6v" facs="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vi_V_TC_46/full/1024,/0/default.jpg"/>
+      <surface n="7r" facs="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vii_R_TC_46/full/1024,/0/default.jpg"/>
+      <surface n="7v" facs="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vii_V_TC_46/full/1024,/0/default.jpg"/>
+      <surface n="8r" facs="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_viii_R_TC_46/full/1024,/0/default.jpg"/>
+      <surface n="8v" facs="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_viii_V_TC_46/full/1024,/0/default.jpg"/>
+      <surface n="9r" facs="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_ix_R_TC_46/full/1024,/0/default.jpg"/>
+      <surface n="9v" facs="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_ix_V_TC_46/full/1024,/0/default.jpg"/>
+      <surface n="10r" facs="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_x_R_TC_46/full/1024,/0/default.jpg"/>
+      <surface n="10v" facs="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_x_V_TC_46/full/1024,/0/default.jpg"/>
+      <surface n="11r" facs="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_xi_R_TC_46/full/1024,/0/default.jpg"/>
+   </facsimile>
+   <text>
+      <body>
+         <pb n="f. VIr"/> <!-- ps: the pages are the basic structure of the body -->
+         <!-- on the pages, we have "elements" which are defined in the superstructure -->
+         <!-- texts -->
+         <div type="introduction" corresp="#t-prologue"> <!-- ps: an element of type "text" is a div element -->
+            <!-- Roman, Franz: how to reference the zones???? -->
+            <p facs="#zone-1"> <!-- ps: a text can have more than one paragraph -->
+               <hi rend="3_lines red">C</hi>onsiderans hystorie sacre p<ex>ro</ex>lixitate<ex>m</ex>
+               necn<ex>on</ex> et difficultate<ex>m</ex>. scolarium q<ex>uoque</ex>... </p>
+         </div>
+         <div type="text" corresp="#t-adam">
+            <p><hi rend="3_lines blue">A</hi>dam in agro damsceno formatus. et in para<lb/>dysum
+               unde .iiii<ex>or</ex>. flumina oriunt<ex>ur</ex> t<ex>ra</ex>nslatus<lb/> cum ... .</p>
+         </div>
+         
+         <!-- all the other texts on this page -->
+         
+         <div type="graph">
+            
+            <!-- nodes -->
+            <div type="node" corresp="#node-eve-1" facs="zone3"> <!-- ps: I propose to address the zones here -->
+               <label>Eua</label>
+               <note></note> <!-- ps: every element can have arbitrary notes -->
+            </div>
+            
+            <div type="node" corresp="#n-adam" facs="zone4">
+               <label>Adam</label>
+            </div>
+            
+            <!-- diagrams -->
+            <div type="diagram" corresp="#d-ark-a" facs="zone4">
+               <label>some text here for the general label</label>
+            </div>
+            
+            <!-- pictures -->
+            <div type="diagram" corresp="#p-adam_eve_cross" facs="zone4">
+               <label>some text here for the general label</label>
+            </div>
+            
+            <!-- groups -->
+            <div type="group" corresp="#pg-lamech-uxores" facs="zone4">
+               <label>uxores lamech</label>
+            </div>
+            
+            <!-- connections -->
+            <div type="connection" corresp="#c-eva-cain" facs="zone4">
+               <label><!-- also connections can have labels. That's another argument why we should mark them --></label>
+            </div>
+            
+            
+            <pb n="f. VIr"/> 
+            
+            
+            <!-- ps: bin dafür, dass dies keine freien label sind, sondern Texte oder label zu Gruppen-->
+            <div type="label" corresp="#l-2">
+               <label>Hic t<ex>er</ex>minat<ex>ur</ex> p<ex>ri</ex>ma etas h<ex>abe</ex>ns
+                  s<ex>e</ex>c<ex>un</ex>d<ex>u</ex>m hebreos .<ex>m</ex>.dc.l.vi.
+                  s<ex>ecundum</ex><lb/> Lxx .<ex>mm</ex>.cc.xl.iiij.</label>
+            </div>
+            
+            <pb n="f. VIv"/>
+            
+            <!-- elements on this page -->
+            
+         </div>
+      </body>
+   </text>
+</TEI>
