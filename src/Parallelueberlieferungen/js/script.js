@@ -79,9 +79,17 @@ d3.json("https://glossa.uni-graz.at/archive/objects/query:rta1576.timeline/metho
 
   //remove not relevant data (no committee)
 
-  const data = result.filter((d)=> d.hasOwnProperty("herrschaft"))
+  const data = result.filter((d)=> d.hasOwnProperty("herrschaft") && d.hasOwnProperty("versions"))
 
   console.log("data: ", data);
+
+  //const dataArr = []
+
+  /* for (const d of data) {
+
+
+
+  } */
 
 
   // List of subgroups = header of the csv files = soil condition here
@@ -91,7 +99,7 @@ d3.json("https://glossa.uni-graz.at/archive/objects/query:rta1576.timeline/metho
 
   // List of groups = species here = value of the first column called group -> I show them on the X axis
   
-  const groups = Array.from(new Set(data.map((d) => d.title)))
+  const groups = Array.from(new Set(data.map((d) => d.label)))
 
   console.log("Groups:", groups.length)
 
@@ -108,7 +116,7 @@ d3.json("https://glossa.uni-graz.at/archive/objects/query:rta1576.timeline/metho
     const subgroupsCount = groups.map((group)=>{
       const o = {}
       o["id"] = group
-      o["group"] = data.filter((d) => d.title === group )
+      o["group"] = data.filter((d) => d.label === group )
       return o
   })
 
