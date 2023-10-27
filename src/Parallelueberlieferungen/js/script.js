@@ -71,7 +71,18 @@ const svg = d3.select("#datavis")
           "translate(" + margin.left + "," + margin.top + ")");
 
 // Parse the Data
-d3.json("../data/parallelueberlieferungen.json").then( data => {
+//../data/parallelueberlieferungen.json
+d3.json("https://glossa.uni-graz.at/archive/objects/query:rta1576.timeline/methods/sdef:Query/getJSON").then( result => {
+
+  console.log("data: ", result);
+
+
+  //remove not relevant data (no committee)
+
+  const data = result.filter((d)=> d.hasOwnProperty("herrschaft"))
+
+  console.log("data: ", data);
+
 
   // List of subgroups = header of the csv files = soil condition here
   

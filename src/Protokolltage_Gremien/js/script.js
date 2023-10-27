@@ -1,10 +1,17 @@
 const gams = "https://gams.uni-graz.at/"
 //console.log(data[0]);
 
+//https://glossa.uni-graz.at/archive/objects/query:rta1576.timeline/methods/sdef:Query/getJSON
+//"../data/protokollauswertung.json"
+d3.json("https://glossa.uni-graz.at/archive/objects/query:rta1576.timeline/methods/sdef:Query/getJSON").then( result => {
+    console.log("data: ", result);
 
-d3.json("../data/protokollauswertung.json").then( data => {
+
+    //remove not relevant data (no committee)
+
+    const data = result.filter((d)=> d.hasOwnProperty("committee"))
+
     console.log("data: ", data);
-
     
     //make grid
 
@@ -62,7 +69,7 @@ d3.json("../data/protokollauswertung.json").then( data => {
             o.weekday = weekdays[d]
             o.id = gridMap[w][d].toISOString().split('T')[0]
 
-            o.days = data.filter(d => d.tag === o.id);
+            o.days = data.filter(d => d.from === o.id);
 
             o.count = o.days.length;
 
@@ -129,8 +136,8 @@ const makeSvg = (divId) => {
               let t = "Tag: " + d.id + "<br>"
               if (d.hasOwnProperty("count")){
                 t = t + "Anzahl: " + d.count + "<br><ol>"
-                t = t + d.days.map((day) =>  `<li><b>${day.title}</b><br>${(day.folio_from===day.folio_to) ? day.folio_from : day.folio_from.concat("-", day.folio_to)}, 
-                <a href="${gams+day.pid}" target="_blank">${day.pid}</a>, ${day.archiv}, ${day.gremium}`).join("</li>")
+                //t = t + d.days.map((day) =>  `<li><b>${day.label}</b><br>${(day.folio_from===day.folio_to) ? day.folio_from : day.folio_from.concat("-", day.folio_to)}, 
+                t = t + d.days.map((day) =>  `<li><b>${day.label}</b><br><a href="${day.pid}" target="_blank">${day.pid}</a>, ${day.repository}, ${day.committee}`).join("</li>")
                 t = t + "</ol><br>"
               }
 
@@ -247,7 +254,7 @@ const makeSvg = (divId) => {
       if (selectedGroup==="Alle Gremien"){
         filteredData = data
       }else{
-        filteredData = data.filter(function(d){ return selectionMap[selectedGroup].includes(d.gremium) })
+        filteredData = data.filter(function(d){ return selectionMap[selectedGroup].includes(d.committee) })
       }
 
       console.log("Filtered Data", filteredData)

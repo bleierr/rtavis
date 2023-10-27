@@ -1,13 +1,15 @@
 
+//http://glossa.uni-graz.at/archive/objects/query:rta1576.timeline/methods/sdef:Query/getJSON
 
-
-/* fetch("https://glossa.uni-graz.at/archive/objects/query:rta1576.timeline/methods/sdef:Query/getJSON", {
+fetch("https://glossa.uni-graz.at/archive/objects/query:rta1576.timeline/methods/sdef:Query/getJSON", {
     headers: {'Accept': 'application/json'}
     })
     .then(res => res.json()) // parse response as JSON (can be res.text() for plain response)
-    .then( (r) => {  */
+    .then( (r) => {  
 
-    const r = JSONDATA;
+    //const r = JSONDATA;
+
+    console.log(r)
 
       $(document).ready(function() {
         $('[data-toggle="popover"]').popover({
@@ -41,7 +43,7 @@
         obj.date = j.from;
         obj.endDate = j.to;
         obj.dateType = j.dateType;
-        obj.url = j.isShownAt;
+        obj.url = j.pid;
         obj.label = j.label;
         obj.collection = j.collection;
         obj.repository = j.repository;
@@ -73,16 +75,17 @@
 
       })
 
-      //console.log("Obj after filter: ", resJson)
+      console.log("Obj after filter: ", resJson)
 
 
       var groupedJson = groupBy(resJson, "dateType")
 
-      //console.log(groupedJson)
+      console.log(groupedJson)
 
       //ganz unten eine Zeile mit "alle Daten"
 
-      const sortOrder = ["Sitzungsdatum","Protokollierter Tag", "Erwähntes Datum", "Ausstellungsdatum", "Praesentatum", "Lectum", "Anmeldetag", "Laufzeit"]
+      //"Sitzungsdatum"
+      const sortOrder = ["Protokollierter Tag", "Erwähntes Datum", "Ausstellungsdatum", "Praesentatum", "Lectum", "Anmeldetag", "Laufzeit"]
 
       const json = []
 
@@ -427,6 +430,6 @@ $('body').on('click', function (e) {
 
 
 
-//})
+})
   
 
