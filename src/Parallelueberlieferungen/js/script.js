@@ -72,7 +72,7 @@ const svg = d3.select("#datavis")
 
 // Parse the Data
 //../data/parallelueberlieferungen.json
-d3.json("https://glossa.uni-graz.at/archive/objects/query:rta1576.timeline/methods/sdef:Query/getJSON").then( result => {
+d3.json("https://glossa.uni-graz.at/archive/objects/query:rta1576.versions/methods/sdef:Query/getJSON").then( result => {
 
   console.log("data: ", result);
 
