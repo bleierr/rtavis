@@ -285,6 +285,12 @@ const JSONDATA = [
     },
     { 
         "unit": "https://gams.uni-graz.at/o:rta1576.adasg4#a4.6.11.87","pid": "https://gams.uni-graz.at/o:rta1576.adasg4#a4.6.11.87","collection": "Archivdokumentation","repository": "Augsburg StadtA","from": "1576-08-16","to": "1576-08-16","isShownAt": "https://gams.uni-graz.at/o:rta1576.adasg4#a4.6.11.87","dateType": "Ausstellungsdatum","label": "Replik der innerösterreichischen Ständegesandten an die Reichsstände zur Supplikation um Türkenhilfe (1576-08-17)","texttype": "Supplikation","herrschaft": "Augsburg, Stadt","versions": "25"
+    },
+    { 
+        "unit": "https://gams.uni-graz.at/o:rta1576.adasg4#a4.6.11.87","pid": "https://gams.uni-graz.at/o:rta1576.adasg4#a4.6.11.87","collection": "Archivdokumentation","repository": "Augsburg StadtA","from": "1576-08-16","to": "1576-08-16","isShownAt": "https://gams.uni-graz.at/o:rta1576.adasg4#a4.6.11.87","dateType": "Ausstellungsdatum","label": "Replik der innerösterreichischen Ständegesandten an die Reichsstände zur Supplikation um Türkenhilfe (1576-08-17)","texttype": "Supplikation","herrschaft": "Augsburg, Stadt","versions": "25"
+    },
+    { 
+        "unit": "https://gams.uni-graz.at/o:rta1576.adasg4#a4.6.11.87","pid": "https://gams.uni-graz.at/o:rta1576.adasg4#a4.6.11.87","collection": "Archivdokumentation","repository": "Augsburg StadtA","from": "1576-08-16","to": "1576-08-16","isShownAt": "https://gams.uni-graz.at/o:rta1576.adasg4#a4.6.11.87","dateType": "Ausstellungsdatum","label": "Replik der innerösterreichischen Ständegesandten an die Reichsstände zur Supplikation um Türkenhilfe (1576-08-17)","texttype": "Supplikation","herrschaft": "Augsburg, Stadt","versions": "25"
     }
         , 
       { 

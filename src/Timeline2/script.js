@@ -10,14 +10,14 @@
     const r = JSONDATA;
 
     console.log(r)
-
+/* 
       $(document).ready(function() {
         $('[data-toggle="popover"]').popover({
           'container': '#pf-timeline',
           'placement': 'top'
         });
       });
-      
+      */
       var groupBy = function(xs, key) {
         return xs.reduce(function(rv, x) {
           (rv[x[key]] = rv[x[key]] || []).push(x);
@@ -25,9 +25,9 @@
         }, {});
       };
       
-      $(document).on('click', '.drop', function () {$(this).popover('show'); });
+     /*  $(document).on('click', '.drop', function () {$(this).popover('show'); });
       
-      $(document).on('click', '.grid', function () {$('[data-toggle="popover"]').popover('hide');});
+      $(document).on('click', '.grid', function () {$('[data-toggle="popover"]').popover('hide');}); */ 
       
       const ONE_HOUR = 60 * 60 * 1000,
             ONE_DAY = 24 * ONE_HOUR,
@@ -54,7 +54,7 @@
 
       //console.log("Obj before filter: ", resJson)
 
-      resJson = resJson.filter((j) =>{
+     /*  resJson = resJson.filter((j) =>{
 
         //console.log(j)
 
@@ -73,364 +73,205 @@
 
         return true;
 
-      })
+      }) */
 
       console.log("Obj after filter: ", resJson)
 
 
       var groupedJson = groupBy(resJson, "dateType")
 
-      console.log(groupedJson)
+      console.log("Grouped Json: ", groupedJson)
 
       //ganz unten eine Zeile mit "alle Daten"
 
-      //"Sitzungsdatum"
-      //const sortOrder = ["Protokollierter Tag", "Erwähntes Datum", "Ausstellungsdatum", "Praesentatum", "Lectum", "Anmeldetag", "Laufzeit"]
-      const sortOrder = Object.keys(groupedJson)
+      let ausstellung = groupedJson.Ausstellungsdatum
 
-      const json = []
 
-      for (const s of sortOrder){
+      //SVG setup
+      const margin = {top: 10, right: 30, bottom: 30, left: 30},
+      width = 3000 - margin.left - margin.right,
+      height = 480 - margin.top - margin.bottom;
 
+      //x scales
+      /* const x = d3.scaleLinear()
+      .rangeRound([0, width])
+      .domain([2, 11]); */
 
-        //https://stackoverflow.com/questions/4413590/javascript-get-array-of-dates-between-2-dates
-        
 
-        const value = groupedJson[s]
+      const x = d3.scaleTime([new Date("1576-06-01"), new Date("1576-08-31")], [0, 960]);
 
-        let obj = {}
-        obj.name = s
-        
-        let d = []
-        for (const [k, v] of Object.entries(value)) {
 
-          //console.log("value: ", v)
+      //set up svg
+      const svg = d3.select("#rta-timeline")
+                      .append("svg")
+                      .attr("width", width + margin.left + margin.right)
+                      .attr("height", height + margin.top + margin.bottom)
+                      .append("g")
+                      .attr("transform",
+                            `translate(${margin.left}, ${margin.top})`);
 
-          let o = {}
-          o.date = v.date
-          o.details = v
-          d.push(o)
+          //tooltip
+          const tooltip = d3.select("body")
+          .append("div")
+          .attr("class", "tooltip")
+          .style("opacity", 0);
 
+          const t = d3.transition()
+          .duration(1000);
 
-        }
-        obj.data = d
-        json.push(obj)
+          const dataFile = "roster.csv"
 
+        //number of bins for histogram
+        const nbins = 50;
 
+//Note: data fetching is done each time the function is ran
+//as d3.csv is replaced by tabletop.js request to get data each time
+//from google spreadsheet
+function update(){
+// Get the data
+//d3.csv(dataFile, function(error, allData) {
 
-      }
+//d3.csv(dataFile).then( allData => {
 
-
-      /* for (const [key, value] of Object.entries(groupedJson)) {
-        
-        let obj = {}
-        obj.name = key
-        
-        let d = []
-        for (const [k, v] of Object.entries(value)) {
-          let o = {}
-          o.date = v.date
-          o.details = v
-          d.push(o)
-        }
-        obj.data = d
-        json.push(obj)
-      } */
-
-
-    //console.log(json)
-
-
-    var data = [],
-      start = new Date('1575-01-01'),
-      today = new Date('1577-01-01');
-
-    for (var x in json) { //json lives in external file for testing
-
-
-      console.log(json[x].name)
-
-
-      data[x] = {};
-      data[x].name = json[x].name;
-      data[x].data = [];
-      for (var y in json[x].data) {
-        data[x].data.push({});
-        data[x].data[y].date = new Date(json[x].data[y].date);
-        data[x].data[y].details = json[x].data[y].details;
-      }
-      $('#timeline-selectpicker').append("<option>" + data[x].name + "</option>");
-
-      
-      data[x].display = true;
-    }
-    //$('#timeline-selectpicker').selectpicker('selectAll');
-
-    var timeline = d3.chart.timeline()
-      .width("1200")
-      .padding({ top: 30, left: 100, bottom: 40, right: 20 })
-      .end(today)
-      .start(today - ONE_YEAR)
-      .minScale(ONE_WEEK / ONE_MONTH)
-      .maxScale(ONE_WEEK / ONE_DAY)
-      /* .eventPopover((el)=>{
-
-
-        console.log(el)
-
-
-        return "Hello";
-
-        let popoverStrg = ''
-
-        
-        popoverStrg = popoverStrg + 'Datum: ' + el.date.toISOString().split('T')[0] + '<br>';
-        
-
-        console.log(el)
-        popoverStrg = popoverStrg +  `URL: <a href="${el.details.url}">${el.details.url}</a><br>`;
-
-        return popoverStrg 
-      })*/
-      .eventColor((d)=>{
-
-        //console.log("In eventLineColor: ", d)
-
-        if(d.hasOwnProperty("events")) {
-          if (d.events.length > 60){
-            return '#191970';
-          }
-          else if (d.events.length > 40){
-
-            return '#0F52BA';
-
-          }
-          else if (d.events.length > 20){
-
-            return '#4169E1';
-
-          }else if (d.events.length > 10){
-
-            return '#6082B6';
-
-          }else if (d.events.length > 5){
-
-            return '#6495ED';
-
-          }else{
-            return '#89CFF0';
-          }
-          
-        } else {
-          return '#7DF9FF';
-        }
-
-      }) 
-      .eventShape((d)=>{
-
-
-
-
-
-
-        return '\uf111';
-
-        /* if(d.hasOwnProperty("events")) {
-          if (d.events.length > 10){
-            return '\uf140';
-          }
-          else{
-            return '\uf192';
-          }
-          
-        } else {
-          return '\uf111';
-        } */
-
-
-      })
-      .eventClick(function(el) {
-
-        console.log(el)
-
-        var table = '<table class="table table-striped table-bordered">';
-        if(el.hasOwnProperty("events")) {
-          table = table + '<thead>' + el.events.length + ' mentionings of the date '+ el.date.toISOString().split('T')[0] + '</thead><tbody>';
-          table = table + '<tr><th>Title</th><th>Archive</th><th>Resource type</th><th>Start date</th><th>End date</th><th>Date type</th></tr>';
-          for (var i = 0; i < el.events.length; i++) {
-            table = table + `<tr><td><a href="${el.events[i].details.url}" target="_blank">${el.events[i].details.label}</a></td>`;
-            table = table + `<td>${el.events[i].details.repository}</td>`;
-            table = table + `<td>${el.events[i].details.collection}</td>`;
-            table = table + `<td>${el.events[i].details.date}</td>`;
-            table = table + `<td>${(el.events[i].details.date !== el.events[i].details.endDate) ? el.events[i].details.endDate : "" }</td>`;
-            table = table + `<td>${el.events[i].details.dateType}</td>`;
-
-           /*  for (var j in el.events[i].details) {
-              table = table +'<td> ' + el.events[i].details[j] + ' </td> ';
-            } */
-            table = table + '</tr>';
-          }
-          table = table + '</tbody>';
-        } else {
-
-          table = table + '<thead>One mentioning of the date '+ el.date.toISOString().split('T')[0] + '</thead><tbody>';
-          
-          table = table + '<tr><th>Title</th><th>Archive</th><th>Resource type</th><th>Start date</th><th>End date</th><th>Date type</th></tr>';
-         
-            table = table + `<tr><td><a href="${el.details.url}" target="_blank">${el.details.label}</a></td>`;
-            table = table + `<td>${el.details.repository}</td>`;
-            table = table + `<td>${el.details.collection}</td>`;
-            table = table + `<td>${el.details.date}</td>`;
-            table = table + `<td>${el.details.endDate}</td>`;
-            table = table + `<td>${el.details.dateType}</td>`;
-
-            table = table + '</tr>';
-            table = table + '</tbody>';
-
-
-
-          /* table = table + 'Datum: ' + el.date.toISOString().split('T')[0] + '<br>';
-
-          table = table +  `URL: <a href="${el.details.url}">${el.details.url}</a><br>`; */
-
-
-          /* for (i in el.details) {
-            table = table + i.charAt(0).toUpperCase() + i.slice(1) + ': ' + el.details[i] + '<br>';
-          } */
-        }
-        $('#legend').html(table);
-
-      });
-    if(countNames(data) <= 0) {
-      timeline.labelWidth(60);
-    }
-
-
-
-    var element = d3.select('#pf-timeline').append('div').datum(data.filter(function(eventGroup) {
-      return eventGroup.display === true;
-    }));
-    timeline(element);
-
-    $('#timeline-selectpicker').on('changed.bs.select', function(event, clickedIndex, newValue, oldValue) {
-      data[clickedIndex].display = !data[clickedIndex].display;
-      element.datum(data.filter(function(eventGroup) {
-        return eventGroup.display === true;
-      }));
-      timeline(element);
-      $('[data-toggle="popover"]').popover({
-        'container': '#pf-timeline',
-        'placement': 'top'
-      });
-    });
-
-    $(window).on('resize', function() {
-      timeline(element);
-      $('[data-toggle="popover"]').popover({
-        'container': '#pf-timeline',
-        'placement': 'top'
-      });
-    });
-
-
-    $('#datepicker').datepicker({
-      autoclose: true,
-      todayBtn: "linked",
-      todayHighlight: true
-    });
-
-$('#datepicker').datepicker('setDate', today);
-
-$('#datepicker').on('changeDate', zoomFilter);
-
-$( document.body ).on( 'click', '.dropdown-menu li', function( event ) {
-  var $target = $( event.currentTarget );
-    $target.closest( '.dropdown' )
-      .find( '[data-bind="label"]' ).text( $target.text() )
-        .end()
-      .children( '.dropdown-toggle' ).dropdown( 'toggle' );
-
-    zoomFilter();
-
-    return false;
+  ausstellung.forEach(function(d) {
+    d.Name = d.label;
+    d.Value = new Date(d.date);
   });
 
-function countNames(data) {
-  var count = 0;
-  for (var i = 0; i < data.length; i++) {
-    if (data[i].name !== undefined && data[i].name !=='') {
-      count++;
-    }
-  }
-  return count;
-} 
+  console.log("Ausstellungsdatum: ", ausstellung)
 
-function zoomFilter() {
-  var range = $('#range-dropdown').find('[data-bind="label"]' ).text(),
-      position = $('#position-dropdown').find('[data-bind="label"]' ).text(),
-      date = $('#datepicker').datepicker('getDate'),
-      startDate,
-      endDate;
+  data = ausstellung
 
-  switch (range) {
-    case '1 hour':
-      range = ONE_HOUR;
-      break;
+  console.log("Data: ", data)
 
-    case '1 day':
-      range = ONE_DAY;
-      break;
+  console.log("x.domain(): ", x.domain())
 
-    case '1 week':
-      range = ONE_WEEK;
-      break;
+//histogram binning
+const histogram = d3.histogram()
+.domain(x.domain())
+.thresholds(x.ticks(nbins))
+.value(function(d) { return d.Value;} )
 
-    case '1 month':
-      range = ONE_MONTH;
-      break;
-  }
-  switch (position) {
-    case 'centered on':
-      startDate = new Date(date.getTime() - range/2);
-      endDate = new Date(date.getTime() + range/2);
-      break;
+//binning data and filtering out empty bins
+const bins = histogram(data).filter(d => d.length>0)
 
-    case 'starting':
-      startDate = date;
-      endDate = new Date(date.getTime() + range);
-      break;
+console.log("Bins: ", bins)
 
-    case 'ending':
-      startDate =  new Date(date.getTime() - range);
-      endDate = date;
-      break;
-  }
-  timeline.Zoom.zoomFilter(startDate, endDate);
-} 
+//g container for each bin
+let binContainer = svg.selectAll(".gBin")
+.data(bins);
+
+binContainer.exit().remove()
+
+let binContainerEnter = binContainer.enter()
+.append("g")
+  .attr("class", "gBin")
+  .attr("transform", d => `translate(${x(d.x0)}, ${height})`)
+
+//need to populate the bin containers with data the first time
+binContainerEnter.selectAll("circle")
+  .data(d => d.map((p, i) => {
+    return {idx: i,
+            name: p.Name,
+            value: p.Value,
+            radius: (x(d.x1)-x(d.x0))/2
+          }
+  }))
+.enter()
+.append("circle")
+  .attr("class", "enter")
+  .attr("cx", 0) //g element already at correct x pos
+  .attr("cy", function(d) {
+      return - d.idx * 2 * d.radius - d.radius; })
+  .attr("r", 0)
+  .on("mouseover", tooltipOn)
+  .on("mouseout", tooltipOff)
+  .transition()
+    .duration(500)
+    .attr("r", function(d) {
+    return (d.length==0) ? 0 : d.radius/2; })
+
+binContainerEnter.merge(binContainer)
+  .attr("transform", d => `translate(${x(d.x0)}, ${height})`)
+
+//enter/update/exit for circles, inside each container
+let dots = binContainer.selectAll("circle")
+  .data(d => d.map((p, i) => {
+    return {idx: i,
+            name: p.Name,
+            value: p.Value,
+            radius: (x(d.x1)-x(d.x0))/2
+          }
+  }))
+
+//EXIT old elements not present in data
+dots.exit()
+  .attr("class", "exit")
+/* .transition(t)
+  .attr("r", 0)
+  .remove(); */
+
+//UPDATE old elements present in new data.
+dots.attr("class", "update");
+
+//ENTER new elements present in new data.
+dots.enter()
+.append("circle")
+  .attr("class", "enter")
+  .attr("cx", 0) //g element already at correct x pos
+  .attr("cy", function(d) {
+    return - d.idx * 2 * d.radius - d.radius; })
+  .attr("r", 0)
+.merge(dots)
+  .on("mouseover", tooltipOn)
+  .on("mouseout", tooltipOff)
+  /* .transition()
+    .duration(500)
+    .attr("r", function(d) {
+    return (d.length==0) ? 0 : d.radius; }) */
+//});//d3.csv
+};//update
+
+function tooltipOn(d) {
+//x position of parent g element
+let gParent = d3.select(this.parentElement)
+let translateValue = gParent.attr("transform")
+
+let gX = translateValue.split(",")[0].split("(")[1]
+let gY = height + (+d3.select(this).attr("cy")-50)
+
+d3.select(this)
+.classed("selected", true)
+tooltip.transition()
+ .duration(200)
+ .style("opacity", .9);
+tooltip.html(d.name + "<br/> (" + d.value + ")")
+.style("left", gX + "px")
+.style("top", gY + "px");
+}//tooltipOn
+
+function tooltipOff(d) {
+d3.select(this)
+.classed("selected", false);
+tooltip.transition()
+   .duration(500)
+   .style("opacity", 0);
+}//tooltipOff
 
 
 
+// add x axis
+svg.append("g")
+.attr("class", "axis axis--x")
+.attr("transform", "translate(0," + height + ")")
+.call(d3.axisBottom(x));
 
-$('#reset-button').click(function() {
-  timeline(element);
-  $('[data-toggle="popover"]').popover({
-    'container': '#pf-timeline',
-    'placement': 'top'
-  });
-});
- 
-$('body').on('click', function (e) {
-  $('[data-toggle="popover"]').each(function () {
-      if (!$(this).is(e.target) && 
-           $(this).has(e.target).length === 0 && 
-           $('.popover').has(e.target).length === 0) {
-          $(this).popover('hide');
-      }
-  });
-});
+//draw everything
+update();
 
+//update with new data every 3sec
+/* d3.interval(function() {
+update();
+}, 3000); */
 
-
-//})
-  
 
