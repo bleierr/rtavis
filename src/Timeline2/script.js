@@ -161,6 +161,42 @@ console.log("Bins: ", bins)
 let binContainer = svg.selectAll(".gBin")
 .data(bins);
 
+const species = d3.group(data, (d) => d.Value);
+
+console.log("Species", species)
+
+console.log(Object.getOwnPropertyNames(species));
+
+//select our chart wrapper
+const graph = d3.select(".chart");
+
+//loop over our nested data and render a container
+//for each concert venue
+const group = graph
+  .selectAll(".container")
+  .data(species)
+  .join("div")
+  .attr("class", "container");
+
+  //color scale
+const colors = ["#FF8E79", "#FF6B5B", "#FF4941", "#DB1D25"];
+scaleColor = d3.scaleOrdinal()
+  .domain(data.map(d => d.Value))
+  .range(colors);
+
+//https://www.williamrchase.com/writing/2019-10-13-animated-waffle-charts-with-d3-and-gsap
+//https://lvngd.com/blog/building-pictogram-grids-d3js/
+//https://d3js.org/d3-array/group
+
+/* group
+  .selectAll(".box")
+  .data(d => d.value)
+  .join("div")
+  .attr("class", "box")
+  .style("background-color", d => scaleColor(d.Value));
+ */
+
+
 binContainer.exit().remove()
 
 let binContainerEnter = binContainer.enter()
