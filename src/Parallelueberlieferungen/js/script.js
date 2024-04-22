@@ -71,7 +71,7 @@ const svg = d3.select("#datavis")
           "translate(" + margin.left + "," + margin.top + ")");
 
 // Parse the Data
-//../data/parallelueberlieferungen.json
+//../data/parallelueberlieferungen.json 
 d3.json("https://glossa.uni-graz.at/archive/objects/query:rta1576.versions/methods/sdef:Query/getJSON").then( result => {
 
   console.log("data: ", result);
@@ -119,6 +119,8 @@ d3.json("https://glossa.uni-graz.at/archive/objects/query:rta1576.versions/metho
       o["group"] = data.filter((d) => d.label === group )
       return o
   })
+
+  console.log("subgroupsCount: ", subgroupsCount)
 
   let sgc = subgroupsCount.map((s)=>{
       
