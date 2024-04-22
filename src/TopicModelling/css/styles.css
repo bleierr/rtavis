@@ -1,0 +1,25 @@
+#datavis{
+    width:  50%
+}
+
+#infotext-container{
+    margin-top: 75px;
+    height: 650px;
+    overflow: scroll;
+    border: 1px solid #ccc;
+    padding: 0 2rem;
+}
+
+
+
+#selectButton{
+    margin-left: 200px;
+}
+
+.parent{
+    font-weight: bolder;
+}
+.child{
+    font-size: 0.9rem;
+    font-style: italic;
+}
