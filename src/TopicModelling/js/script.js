@@ -1,9 +1,11 @@
 
 
 // set the dimensions and margins of the graph
-const margin = {top: 50, right: 50, bottom: 20, left: 50},
+const margin = {top: 100, right: 50, bottom: 20, left: 50},
     width = 800 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
+
+
 
 // append the svg object to the body of the page
 const svg = d3.select("#datavis")
@@ -14,26 +16,36 @@ const svg = d3.select("#datavis")
     .attr("transform",
           "translate(" + margin.left + "," + margin.top + ")");
 
-// Parse the Data
-//../data/parallelueberlieferungen.json 
+
+          
+  
+
+  const filterData = function (data, propabilityRange){
+
+    return data.map((d) => {
+      console.log("propabilityRange: ", propabilityRange);
+      return {"id" : d.id, "topicsLst": d.topicsLst.filter((t)=>t.propability > propabilityRange)}
+
+    })
+  }        
+
+
+
+
 d3.json("../data/out.json ").then( result => {
 
   console.log("data: ", result);
 
 
-  //remove not relevant data (no committee)
 
   const data = result.map((d, idx)=>{
 
-    topicsLst = [];
-    for (const property in d) {
-      if (d[property] > 0.15){
-        topicsLst.push({"id":property, "propability": d[property]});
+      topicsLst = [];
+      for (const property in d) {
+          topicsLst.push({"id":property, "propability": d[property]});
       }
-    }
-
-    return {"id" : `"T${idx}"`, "topics":d, "topicsLst": topicsLst}
-  }) 
+      return {"id" : `"T${idx}"`, "topics":d, "topicsLst": topicsLst};
+    });
 
   console.log("data: ", data);
 
@@ -61,50 +73,77 @@ d3.json("../data/out.json ").then( result => {
       svg.append("g")
       .call(d3.axisLeft(y));
 
-
-       // Tooltip Funktionalität
-
-       const infotext =  d3.select("#infotext");
-
-       const mouseclick = function(event, d) {
-        let t = "Topic: " + d.id + "<br>"
-        
-          t = t + "Anzahl: " + d.topicsLst.length + "<br><table>"
-
-          
-
-          for (const topic of d.topicsLst.sort((a, b) => b.propability - a.propability)){
-            t = t + `<row><cell>${topic.id}</cell><cell>${topic.propability}</cell></row>`
-          }
-          t = t + "</table><br>"
-               
-       /*  d3.select(this)
-        .style("stroke", "red") */
-        infotext.html(t);
-
       
+  function update(data){
+    
+   // Tooltip Funktionalität
 
-      }
+    const mouseclick = function(event, d) {
+      const infotext =  d3.select("#infotext");
+      infotext.text(`Anzahl der Texte: ${d.topicsLst.length}`);
 
-       
+      table.clear().draw();
+      table.rows.add(d.topicsLst.map((row)=>[row.id, row.propability])).draw();
+
+
+    }
+    
 
   // Show the bars
-  svg.selectAll("bar")
-    .data(data)
-    .enter()
+  const bars = svg.selectAll(".bar")
+    .data(data);
+
+
+    //UPDATE
+    
+    //ENTER
+
+  bars.enter()
     .append("rect")
+      .merge(bars) 
+      .transition() 
+      .duration(1000)
         .attr("class", "bar")
         .attr("fill", "#69b3a2")
         .attr("y", (d) =>  y(d.id))
         .attr("x", (d) =>  0)
         .attr("height", y.bandwidth())
         .attr("width", (d) => x(d.topicsLst.length))
-        .on("click", mouseclick)
+        
+        bars
+        .on("click", mouseclick);
+        
+
+  //EXIT
+  bars.exit().remove();
+
+  }
+
+  update(filterData(data, document.getElementById('propabilityRange').value));
 
 
- 
+
+
+  const slider = document.getElementById('propabilityRange')
+
+  slider.onchange = function(d){
+    const selectedValue = d.target.value;
+    document.getElementById("slidervalue").innerHTML = selectedValue;
+    update(filterData(data, selectedValue));
+  }
+
+
 
 
     })
+
+
+
+let table =  new DataTable('#detailsTable');
+
+
+
+  
+    
 
   

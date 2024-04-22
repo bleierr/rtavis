@@ -1,19 +1,39 @@
 <html xmlns:gams="http://gams.uni-graz.at/o:gams-ontology#" xmlns:t="http://www.tei-c.org/ns/1.0">
    <head>
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <link rel="stylesheet" href="css/dataTables.dataTables.css">
       <link rel="stylesheet" href="css/styles.css">
    </head>
    <body>
 
 
-    <h1>Parallelüberlieferungen</h1>
+    <h1>Topic Modelling: RTA 1576</h1>
 
-      <div><select id="selectButton"></select></div>
+    <div class="slidecontainer">
+      0.0 <input type="range" min="0.0" max="1.0" value="0.5" step="0.05" class="slider" id="propabilityRange"> 1.0
+
+     <div>Current slider value: <span id="slidervalue"></span></div>
+
+    </div>
       <div style="display: flex;">
          <div id="datavis"></div>
          <div id="infotext-container">
             <h4>Durch Klick auf die Balken werden zusätzuliche Details angezeigt.</h4>
             <div id="infotext">Info</div>
+            <table id='detailsTable'>
+               <thead>
+                  <tr>
+                      <th>ID</th>
+                      <th>Propability</th>
+                  </tr>
+              </thead>
+
+            </table>
+            
          </div>
-      </div><script src="js/d3.v7.min.js"></script><script src="js/script.js">//</script></body>
+      </div>
+      <script src="js/d3.v7.min.js"></script>
+      <script src="js/jquery-3.7.1.js"></script>
+      <script src="js/dataTables.js"></script>
+      <script src="js/script.js">//</script></body>
 </html>
