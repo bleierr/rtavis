@@ -1,7 +1,7 @@
 const JSONDATA = [
 
     { 
-        "unit": "https://gams.uni-graz.at/o:rta1576.edd1e8m515511#d1e173t1d0713","pid": "https://gams.uni-graz.at/o:rta1576.edd1e8m515511#d1e173t1d0713","collection": "Edition: Quellentext","repository": "München HStA","from": "1576-07-13","to": "1576-07-13","isShownAt": "https://gams.uni-graz.at/o:rta1576.edd1e8m515511/sdef:TEI/get?mode=lesetext#d1e173t1d0713","dateType": "Kommunikationsdatum","label": "Auszug aus dem Fürstenratsprotokoll Eichstätt. Freitag, 13. Juli 1576.","texttype": "Protokoll"
+        "unit": "https://gams.uni-graz.at/o:rta1576.edd1e8m515511#d1e173t1d0713","pid": "https://gams.uni-graz.at/o:rta1576.edd1e8m515511#d1e173t1d0713","collection": "Edition: Quellentext","repository": "München HStA","from": "1576-07-13","to": "1576-07-24","isShownAt": "https://gams.uni-graz.at/o:rta1576.edd1e8m515511/sdef:TEI/get?mode=lesetext#d1e173t1d0713","dateType": "Kommunikationsdatum","label": "Auszug aus dem Fürstenratsprotokoll Eichstätt. Freitag, 13. Juli 1576.","texttype": "Protokoll"
     }
         , 
       { 
@@ -302,7 +302,7 @@ const JSONDATA = [
     }
         , 
       { 
-        "unit": "https://gams.uni-graz.at/o:rta1576.adasg4#a4.6.11.91","pid": "https://gams.uni-graz.at/o:rta1576.adasg4#a4.6.11.91","collection": "Archivdokumentation","repository": "Augsburg StadtA","from": "1576-05-03","to": "1576-05-03","isShownAt": "https://gams.uni-graz.at/o:rta1576.adasg4#a4.6.11.91","dateType": "Ausstellungsdatum","label": "Abschied des Münzprobationstags der bayerischen, fränkischen und schwäbischen Kreisstände (Münzassoziation) in Augsburg vom 3. Mai 1576","texttype": "Abschied","herrschaft": "Augsburg, Stadt","versions": "25"
+        "unit": "https://gams.uni-graz.at/o:rta1576.adasg4#a4.6.11.91","pid": "https://gams.uni-graz.at/o:rta1576.adasg4#a4.6.11.91","collection": "Archivdokumentation","repository": "Augsburg StadtA","from": "1576-05-03","to": "1576-05-05","isShownAt": "https://gams.uni-graz.at/o:rta1576.adasg4#a4.6.11.91","dateType": "Ausstellungsdatum","label": "Abschied des Münzprobationstags der bayerischen, fränkischen und schwäbischen Kreisstände (Münzassoziation) in Augsburg vom 3. Mai 1576","texttype": "Abschied","herrschaft": "Augsburg, Stadt","versions": "25"
     }
         , 
       { 

@@ -13,3 +13,38 @@ body {
   white-space: pre;
   max-width: none;
 }
+.timeline-labels{
+  display: flex;
+}
+.box-container{
+  margin: 5px;
+  width:30px;
+  min-height: 150px;
+  background-color:grey;
+  display:inline-block;
+}
+
+.label-container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 5px;
+  width:30px;
+  min-height: 6rem;
+  background-color:red;
+  
+}
+
+.x-label{
+  transform: rotate(90deg);
+  font-size: 12px;
+  min-width:4rem;
+}
+
+.box{
+  width:10px;
+  min-height:10px;
+  margin: 1px;
+  background-color: green;
+  display: inline-block;
+}
