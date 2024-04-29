@@ -27,22 +27,47 @@ const svg = d3.select("#datavis")
       return {"id" : d.id, "topicsLst": d.topicsLst.filter((t)=>t.propability > propabilityRange)}
 
     })
-  }        
+  }
+  
+  const mouseclick = function(event, d) {
+    const infotext =  d3.select("#infotext");
+    infotext.text(`Anzahl der Texte: ${d.topicsLst.length} | ${d.id}`);
+
+    console.log("In onclick")
+
+    table.clear().draw();
+    table.rows.add(d.topicsLst.map((row)=>[ `<a href="https://gams.uni-graz.at/o:${row.pid}#${row.did}" target="_blank">${row.id}</a>`, row.title, row.date, row.propability, row.topics])).draw();
+
+
+  }
 
 
 
 
-d3.json("../data/out.json ").then( result => {
+Promise.all([
+  d3.json("../data/out.json"),
+  d3.json("../data/meta.json")
+]).then( ([result, meta]) => {
 
   console.log("data: ", result);
 
+
+  console.log("Meta", meta)
+  const metaDic = {}
+
+  for (let m of meta){
+    metaDic[m.file_name] = m
+  }
+
+  console.log("Meta Dic", metaDic)
 
 
   const data = result.map((d, idx)=>{
 
       topicsLst = [];
       for (const property in d) {
-          topicsLst.push({"id":property, "propability": d[property]});
+          topicsLst.push({"id":property, "propability": d[property], "title": metaDic[property].title, "pid": metaDic[property].PID,
+                        "did": metaDic[property].div_ID,"date": metaDic[property].date, "topics": metaDic[property].topics});
       }
       return {"id" : `"T${idx}"`, "topics":d, "topicsLst": topicsLst};
     });
@@ -73,69 +98,46 @@ d3.json("../data/out.json ").then( result => {
       svg.append("g")
       .call(d3.axisLeft(y));
 
-      
-  function update(data){
+
+      function update(data){
+
+        const t = svg.transition().duration(750);
+
+        console.log("data: ", data)
+
+        svg.selectAll(".bar")
+        .data(data)
+        .join(
+          enter => enter.append("rect")
+          .attr("class", "bar")
+          .attr("fill", "#69b3a2")
+          .attr("y", (d) =>  y(d.id))
+          .attr("x", (d) =>  0)
+          .attr("height", y.bandwidth())
+          .on("click", mouseclick)
+          .call(enter => enter.transition(t)
+                  .attr("width", (d) => x(d.topicsLst.length))), 
+          update => update.call(update => update.transition(t)
+                  .attr("width", (d) => x(d.topicsLst.length))),
+          exit => exit.remove()
+        );
+          
+
+      }
+
+      const slider = document.getElementById('propabilityRange')
+
+      slider.onchange = function(d){
+        const selectedValue = d.target.value;
+        document.getElementById("slidervalue").innerHTML = selectedValue;
+        update(filterData(data, selectedValue));
+      }
+
+      update(filterData(data, document.getElementById('propabilityRange').value));
+
+
+  })
     
-   // Tooltip Funktionalität
-
-    const mouseclick = function(event, d) {
-      const infotext =  d3.select("#infotext");
-      infotext.text(`Anzahl der Texte: ${d.topicsLst.length}`);
-
-      table.clear().draw();
-      table.rows.add(d.topicsLst.map((row)=>[row.id, row.propability])).draw();
-
-
-    }
-    
-
-  // Show the bars
-  const bars = svg.selectAll(".bar")
-    .data(data);
-
-
-    //UPDATE
-    
-    //ENTER
-
-  bars.enter()
-    .append("rect")
-      .merge(bars) 
-      .transition() 
-      .duration(1000)
-        .attr("class", "bar")
-        .attr("fill", "#69b3a2")
-        .attr("y", (d) =>  y(d.id))
-        .attr("x", (d) =>  0)
-        .attr("height", y.bandwidth())
-        .attr("width", (d) => x(d.topicsLst.length))
-        
-        bars
-        .on("click", mouseclick);
-        
-
-  //EXIT
-  bars.exit().remove();
-
-  }
-
-  update(filterData(data, document.getElementById('propabilityRange').value));
-
-
-
-
-  const slider = document.getElementById('propabilityRange')
-
-  slider.onchange = function(d){
-    const selectedValue = d.target.value;
-    document.getElementById("slidervalue").innerHTML = selectedValue;
-    update(filterData(data, selectedValue));
-  }
-
-
-
-
-    })
 
 
 
