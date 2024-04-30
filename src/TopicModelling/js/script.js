@@ -18,6 +18,13 @@ const svg = d3.select("#datavis")
 
 
           
+  const svgMini = d3.select("#minivis")
+      .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform",
+              "translate(" + margin.left + "," + margin.top + ")");
   
 
   const filterData = function (data, propabilityRange){
@@ -38,7 +45,7 @@ const svg = d3.select("#datavis")
     table.clear().draw();
     table.rows.add(d.topicsLst.map((row)=>[ `<a href="https://gams.uni-graz.at/o:${row.pid}#${row.did}" target="_blank">${row.id}</a>`, row.title, row.date, row.propability, row.topics])).draw();
 
-
+    
   }
 
 
@@ -53,6 +60,48 @@ Promise.all([
 
 
   console.log("Meta", meta)
+
+
+
+  const mapTopics = (data)=>{
+
+
+    const dict = {}
+
+    console.log("DATA in map: ", data)
+
+    for (let d of data){
+
+      if (d.topicsLst){
+        for (let tl of d.topicsLst){
+          if(tl.topics){
+
+            const topics = tl.topics.split(" ");
+            for (let t of topics){
+      
+              if(dict.hasOwnProperty(t)){
+                dict[t].push(tl);
+              }else{
+                dict[t]=[];
+                dict[t].push(tl);
+              }
+            }
+          }
+        }  
+      }
+    }
+
+    return Object.keys(dict).map((k) => {
+                                  return {"id" : k, "list" : dict[k]}
+                              });
+
+  }
+
+  
+
+  //console.log("TOPICS: ", termTopicDic)
+
+
   const metaDic = {}
 
   for (let m of meta){
@@ -87,8 +136,6 @@ Promise.all([
   svg.append("g")
     .call(d3.axisTop(x).tickSizeOuter(0));
 
-  
-
       // Add Y axis
       const y = d3.scaleBand()
       .domain(data.map((d)=>d.id))
@@ -114,7 +161,10 @@ Promise.all([
           .attr("y", (d) =>  y(d.id))
           .attr("x", (d) =>  0)
           .attr("height", y.bandwidth())
-          .on("click", mouseclick)
+          .on("click", function(e, d){
+            mouseclick(e, d);
+            //updateMinivis(d);
+          })
           .call(enter => enter.transition(t)
                   .attr("width", (d) => x(d.topicsLst.length))), 
           update => update.call(update => update.transition(t)
@@ -125,12 +175,78 @@ Promise.all([
 
       }
 
+
+
+
+      /***********MINI VIS***********/
+
+      // Add X axis
+      const xMini = d3.scaleBand()
+      .domain(data.map((d)=>d.id))
+      .range([0, width])
+      .padding([0.05])
+
+      svg.append("g")
+      .call(d3.axisBottom(x).tickSizeOuter(0));
+
+      // Add Y axis
+      const yMini = d3.scaleLinear()
+      .domain([0,50])
+      .range([0, height])
+
+      svg.append("g")
+      .call(d3.axisLeft(y));
+
+
+      function updateMinivis(data){
+        console.log("Works");
+
+        const t = svgMini.transition().duration(750);
+
+        console.log("data: ", data)
+
+        svgMini.selectAll(".bar")
+        .data(data)
+        .join(
+          enter => enter.append("rect")
+          .attr("class", "bar")
+          .attr("fill", "#69b3a2")
+          .attr("y", (d) =>  0)
+          .attr("x", (d) =>  yMini(d.id))
+          .attr("height", yMini.bandwidth())
+          .on("click", function(e, d){
+            mouseclick(e, d);
+            //updateMinivis(d);
+          })
+          .call(enter => enter.transition(t)
+                  .attr("width", (d) => xMini(d.topicsLst.length))), 
+          update => update.call(update => update.transition(t)
+                  .attr("width", (d) => xMini(d.topicsLst.length))),
+          exit => exit.remove()
+        );
+
+
+
+
+
+      }
+
       const slider = document.getElementById('propabilityRange')
 
       slider.onchange = function(d){
         const selectedValue = d.target.value;
         document.getElementById("slidervalue").innerHTML = selectedValue;
-        update(filterData(data, selectedValue));
+
+        const fd = filterData(data, selectedValue);
+        console.log("DATA: ", fd);
+        
+
+        const td = mapTopics(fd)
+        console.log("TOPICS: ", td);
+        updateMinivis(td)
+
+        update(fd);
+
       }
 
       update(filterData(data, document.getElementById('propabilityRange').value));
