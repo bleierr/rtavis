@@ -1,30 +1,30 @@
 
 
 // set the dimensions and margins of the graph
-const margin = {top: 100, right: 50, bottom: 20, left: 50},
-    width = 800 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+const MARGIN = {top: 100, right: 50, bottom: 100, left: 50},
+    WIDTH = 1200 - MARGIN.left - MARGIN.right,
+    HEIGHT = 500 - MARGIN.top - MARGIN.bottom;
 
 
 
 // append the svg object to the body of the page
 const svg = d3.select("#datavis")
   .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+    .attr("width", WIDTH + MARGIN.left + MARGIN.right)
+    .attr("height", HEIGHT + MARGIN.top + MARGIN.bottom)
   .append("g")
     .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
+          "translate(" + MARGIN.left + "," + MARGIN.top + ")");
 
 
           
-  const svgMini = d3.select("#minivis")
+  const svg2 = d3.select("#datavis2")
       .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
+        .attr("width", WIDTH + MARGIN.left + MARGIN.right)
+        .attr("height", HEIGHT + MARGIN.top + MARGIN.bottom)
       .append("g")
         .attr("transform",
-              "translate(" + margin.left + "," + margin.top + ")");
+              "translate(" + MARGIN.left + "," + MARGIN.top + ")");
   
 
   const filterData = function (data, propabilityRange){
@@ -131,7 +131,7 @@ Promise.all([
   // Add X axis
   const x = d3.scaleLinear()
       .domain([0, 250])
-      .range([0, width ]);
+      .range([0, WIDTH ]);
 
   svg.append("g")
     .call(d3.axisTop(x).tickSizeOuter(0));
@@ -139,7 +139,7 @@ Promise.all([
       // Add Y axis
       const y = d3.scaleBand()
       .domain(data.map((d)=>d.id))
-      .range([0, height])
+      .range([0, HEIGHT])
       .padding([0.05])
 
       svg.append("g")
@@ -178,50 +178,58 @@ Promise.all([
 
 
 
-      /***********MINI VIS***********/
+      /***********Datavis 2***********/
+
+      
 
       // Add X axis
-      const xMini = d3.scaleBand()
-      .domain(data.map((d)=>d.id))
-      .range([0, width])
+      const xAxis2 = d3.scaleBand()
+      .domain(mapTopics(data).map((d)=>d.id))
+      .range([0, WIDTH])
       .padding([0.05])
 
-      svg.append("g")
-      .call(d3.axisBottom(x).tickSizeOuter(0));
+      svg2.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + (HEIGHT) + ")")
+            .call(d3.axisBottom(xAxis2).tickSizeOuter(0))
+            .selectAll("text")  
+            .style("text-anchor", "end")
+            .attr("dx", "-.8em")
+            .attr("dy", ".15em")
+            .attr("transform", "rotate(-65)");
+
+      
 
       // Add Y axis
-      const yMini = d3.scaleLinear()
-      .domain([0,50])
-      .range([0, height])
+      const yAxis2 = d3.scaleLinear()
+      .domain([0,100])
+      .range([HEIGHT,0])
 
-      svg.append("g")
-      .call(d3.axisLeft(y));
+      svg2.append("g")
+      .call(d3.axisLeft(yAxis2));
 
 
-      function updateMinivis(data){
+      function updatevis2(data){
         console.log("Works");
 
-        const t = svgMini.transition().duration(750);
+        const t = svg2.transition().duration(750);
 
         console.log("data: ", data)
 
-        svgMini.selectAll(".bar")
+        svg2.selectAll(".bar")
         .data(data)
         .join(
           enter => enter.append("rect")
           .attr("class", "bar")
           .attr("fill", "#69b3a2")
-          .attr("y", (d) =>  0)
-          .attr("x", (d) =>  yMini(d.id))
-          .attr("height", yMini.bandwidth())
-          .on("click", function(e, d){
-            mouseclick(e, d);
-            //updateMinivis(d);
-          })
-          .call(enter => enter.transition(t)
-                  .attr("width", (d) => xMini(d.topicsLst.length))), 
+          .attr("x", (d) =>  xAxis2(d.id))
+          .attr("width", xAxis2.bandwidth())          
+          .call(enter => enter.transition(t)      
+                  .attr("y", (d) => yAxis2(d.list.length) )
+                  .attr("height", (d) => HEIGHT - yAxis2(d.list.length))), 
           update => update.call(update => update.transition(t)
-                  .attr("width", (d) => xMini(d.topicsLst.length))),
+                  .attr("y", (d) => yAxis2(d.list.length) )
+                  .attr("height", (d) => HEIGHT - yAxis2(d.list.length))),
           exit => exit.remove()
         );
 
@@ -243,13 +251,17 @@ Promise.all([
 
         const td = mapTopics(fd)
         console.log("TOPICS: ", td);
-        updateMinivis(td)
+        updatevis2(td)
 
         update(fd);
 
       }
 
-      update(filterData(data, document.getElementById('propabilityRange').value));
+      const fd = filterData(data, document.getElementById('propabilityRange').value);
+
+      update(fd);
+
+      updatevis2(mapTopics(fd));
 
 
   })
