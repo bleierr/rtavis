@@ -61,40 +61,40 @@ Promise.all([
 
   console.log("Meta", meta)
 
+  
 
 
-  const mapTopics = (data)=>{
+  mapTopics = (data) => {
 
 
-    const dict = {}
+    const lst = []
+    
 
     console.log("DATA in map: ", data)
 
     for (let d of data){
+      const terms = {}
 
       if (d.topicsLst){
         for (let tl of d.topicsLst){
           if(tl.topics){
 
-            const topics = tl.topics.split(" ");
-            for (let t of topics){
-      
-              if(dict.hasOwnProperty(t)){
-                dict[t].push(tl);
+            for (let t of tl.topics.split(" ")){
+              if(terms.hasOwnProperty(t)){
+                terms[t] = terms[t] + 1;
               }else{
-                dict[t]=[];
-                dict[t].push(tl);
+                terms[t] = 1;
               }
             }
           }
         }  
       }
+
+     lst.push(Object.keys(terms).map((t) => {
+                    return {"topic":d.id, "term":t, "count":terms[t]}
+                  }));
     }
-
-    return Object.keys(dict).map((k) => {
-                                  return {"id" : k, "list" : dict[k]}
-                              });
-
+    return lst
   }
 
   
@@ -122,6 +122,21 @@ Promise.all([
     });
 
   console.log("data: ", data);
+
+  let lstTerms = []
+
+  for (let d of data){
+    if (d.topicsLst){
+      for (let tl of d.topicsLst){
+        if(tl.topics){
+          lstTerms = lstTerms.concat(tl.topics.split(" "))
+        }
+      }  
+    }
+  }
+  lstTerms = [...new Set(lstTerms)];
+
+  console.log("LSTTERMS", lstTerms)
 
   
   console.log("data topics length:", Object.keys(data[1].topics).length)
@@ -176,15 +191,16 @@ Promise.all([
       }
 
 
-
-
       /***********Datavis 2***********/
 
+
+
+     
       
 
       // Add X axis
       const xAxis2 = d3.scaleBand()
-      .domain(mapTopics(data).map((d)=>d.id))
+      .domain(lstTerms)
       .range([0, WIDTH])
       .padding([0.05])
 
@@ -201,12 +217,17 @@ Promise.all([
       
 
       // Add Y axis
-      const yAxis2 = d3.scaleLinear()
-      .domain([0,100])
+      const yAxis2 = d3.scaleBand()
+      .domain(data.map((d)=>d.id))
       .range([HEIGHT,0])
 
       svg2.append("g")
       .call(d3.axisLeft(yAxis2));
+
+      // Build color scale
+      var myColor = d3.scaleLinear()
+                .range(["white","blue", "#46505E"])
+                .domain([0.0000001,15, 50])
 
 
       function updatevis2(data){
@@ -216,26 +237,36 @@ Promise.all([
 
         console.log("data: ", data)
 
-        svg2.selectAll(".bar")
-        .data(data)
+        svg2.selectAll(".zell")
+        .data(data, (d)=>d)
         .join(
           enter => enter.append("rect")
-          .attr("class", "bar")
-          .attr("fill", "#69b3a2")
-          .attr("x", (d) =>  xAxis2(d.id))
+          .attr("class", "zell")
+          .style("stroke-width", "1")
+          .style("stroke", "black")
+          .attr("fill", (d) =>  (d.hasOwnProperty("count") ) ? myColor(d.count): myColor(0))
+          .attr("x", (d) =>  xAxis2(d.term))
           .attr("width", xAxis2.bandwidth())          
-          .call(enter => enter.transition(t)      
-                  .attr("y", (d) => yAxis2(d.list.length) )
-                  .attr("height", (d) => HEIGHT - yAxis2(d.list.length))), 
+          .attr("y", (d) => yAxis2(d.topic) )
+          .attr("height", yAxis2.bandwidth()), 
           update => update.call(update => update.transition(t)
-                  .attr("y", (d) => yAxis2(d.list.length) )
-                  .attr("height", (d) => HEIGHT - yAxis2(d.list.length))),
+                          .attr("fill", (d) =>  (d.hasOwnProperty("count") ) ? myColor(d.count): myColor(0))),
           exit => exit.remove()
         );
 
 
+        /* .append("rect")
+                .attr("class", "cell")
+                .style("cursor", "pointer")
+                .style("stroke-width", "1")
+                .style("stroke", "white")
+                .attr("x", function(d) { return x(d.weekday); })
+                .attr("y", function(d) { return y(d.week); })
+                .attr("width", x.bandwidth())
+                .attr("height", y.bandwidth())
+                .attr("fill", function(d) { return (d.hasOwnProperty("count") ) ? myColor(d.count): myColor(0)})
 
-
+ */
 
       }
 
