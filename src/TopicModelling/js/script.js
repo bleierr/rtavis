@@ -1,8 +1,8 @@
 
 
 // set the dimensions and margins of the graph
-const MARGIN = {top: 100, right: 50, bottom: 100, left: 50},
-    WIDTH = 1200 - MARGIN.left - MARGIN.right,
+const MARGIN = {top: 50, right: 50, bottom: 100, left: 50},
+    WIDTH = 900 - MARGIN.left - MARGIN.right,
     HEIGHT = 500 - MARGIN.top - MARGIN.bottom;
 
 
@@ -38,7 +38,7 @@ const svg = d3.select("#datavis")
   
   const mouseclick = function(event, d) {
     const infotext =  d3.select("#infotext");
-    infotext.text(`Anzahl der Texte: ${d.topicsLst.length} | ${d.id}`);
+    infotext.text(`Anzahl der Texte: ${d.topicsLst.length} | ${ (d.id) ? d.id : d.topic +"-"+d.term}`);
 
     console.log("In onclick")
 
@@ -81,9 +81,14 @@ Promise.all([
 
             for (let t of tl.topics.split(" ")){
               if(terms.hasOwnProperty(t)){
-                terms[t] = terms[t] + 1;
+                terms[t].count = terms[t].count + 1;
+                terms[t].topicsLst.push(tl)
               }else{
-                terms[t] = 1;
+                console.log(tl)
+                terms[t] = {}
+                terms[t].count = 1;
+                terms[t].topicsLst = [];
+                terms[t].topicsLst.push(tl)
               }
             }
           }
@@ -91,10 +96,10 @@ Promise.all([
       }
 
      lst.push(Object.keys(terms).map((t) => {
-                    return {"topic":d.id, "term":t, "count":terms[t]}
+                    return {"topic":d.id, "term":t, "count":terms[t].count, "topicsLst":terms[t].topicsLst}
                   }));
     }
-    return lst
+    return lst.flat(1)
   }
 
   
@@ -230,27 +235,31 @@ Promise.all([
                 .domain([0.0000001,15, 50])
 
 
-      function updatevis2(data){
+      function updatevis2(data2){
         console.log("Works");
 
         const t = svg2.transition().duration(750);
 
-        console.log("data: ", data)
+        console.log("data 2: ", data2)
 
         svg2.selectAll(".zell")
-        .data(data, (d)=>d)
+        .data(data2, function(d) {return d.topic+':'+d.term;})
         .join(
           enter => enter.append("rect")
           .attr("class", "zell")
           .style("stroke-width", "1")
           .style("stroke", "black")
           .attr("fill", (d) =>  (d.hasOwnProperty("count") ) ? myColor(d.count): myColor(0))
-          .attr("x", (d) =>  xAxis2(d.term))
+          .attr("x", (d) =>  {return xAxis2(d.term)})
           .attr("width", xAxis2.bandwidth())          
           .attr("y", (d) => yAxis2(d.topic) )
-          .attr("height", yAxis2.bandwidth()), 
-          update => update.call(update => update.transition(t)
-                          .attr("fill", (d) =>  (d.hasOwnProperty("count") ) ? myColor(d.count): myColor(0))),
+          .attr("height", yAxis2.bandwidth())
+          .on("click", function(e, d){
+            mouseclick(e, d);
+            //updateMinivis(d);
+          }), 
+          update => update.transition(t)
+                          .attr("fill", (d) =>  (d.hasOwnProperty("count") ) ? myColor(d.count): myColor(0)),
           exit => exit.remove()
         );
 
