@@ -1,7 +1,7 @@
 
 //http://glossa.uni-graz.at/archive/objects/query:rta1576.timeline/methods/sdef:Query/getJSON
 
-fetch("https://glossa.uni-graz.at/archive/objects/query:rta1576.timeline/methods/sdef:Query/getJSON", {
+fetch("https://gams.uni-graz.at/archive/objects/query:rta1576.timeline/methods/sdef:Query/getJSON", {
     headers: {'Accept': 'application/json'}
     })
     .then(res => res.json()) // parse response as JSON (can be res.text() for plain response)
@@ -97,25 +97,27 @@ fetch("https://glossa.uni-graz.at/archive/objects/query:rta1576.timeline/methods
 
         const value = groupedJson[s]
 
-        let obj = {}
-        obj.name = s
-        
-        let d = []
-        for (const [k, v] of Object.entries(value)) {
+        if (value) {
 
-          //console.log("value: ", v)
+          let obj = {}
+          obj.name = s
+          
+          let d = []
+          for (const [k, v] of Object.entries(value)) {
 
-          let o = {}
-          o.date = v.date
-          o.details = v
-          d.push(o)
+            //console.log("value: ", v)
 
-
-        }
-        obj.data = d
-        json.push(obj)
+            let o = {}
+            o.date = v.date
+            o.details = v
+            d.push(o)
 
 
+          }
+          obj.data = d;
+          json.push(obj);
+
+      }
 
       }
 
