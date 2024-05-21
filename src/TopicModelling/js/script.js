@@ -1,9 +1,9 @@
 
 
 // set the dimensions and margins of the graph
-const MARGIN = {top: 50, right: 50, bottom: 100, left: 50},
-    WIDTH = 900 - MARGIN.left - MARGIN.right,
-    HEIGHT = 500 - MARGIN.top - MARGIN.bottom;
+const MARGIN = {top: 200, right: 50, bottom: 20, left: 50},
+    WIDTH = 800 - MARGIN.left - MARGIN.right,
+    HEIGHT = 1000 - MARGIN.top - MARGIN.bottom;
 
 
 
@@ -20,7 +20,7 @@ const svg = d3.select("#datavis")
           
   const svg2 = d3.select("#datavis2")
       .append("svg")
-        .attr("width", WIDTH + MARGIN.left + MARGIN.right)
+        .attr("width", WIDTH + 400 + MARGIN.left + MARGIN.right)
         .attr("height", HEIGHT + MARGIN.top + MARGIN.bottom)
       .append("g")
         .attr("transform",
@@ -37,8 +37,12 @@ const svg = d3.select("#datavis")
   }
   
   const mouseclick = function(event, d) {
-    const infotext =  d3.select("#infotext");
-    infotext.text(`Anzahl der Texte: ${d.topicsLst.length} | ${ (d.id) ? d.id : d.topic +"-"+d.term}`);
+    const infotext =  document.getElementById("infotext");
+
+    let topicHeading = (d.id) ? d.id : `${d.topic} - <a href="https://gams.uni-graz.at/o:rta1576.listterm#${d.term.replace('listterm:', '')}" target="_blank">${d.term}</a>`;
+
+    console.log(infotext)
+    infotext.innerHTML = `Anzahl der Texte: ${d.topicsLst.length} | ${topicHeading}`;
 
     console.log("In onclick")
 
@@ -48,11 +52,18 @@ const svg = d3.select("#datavis")
     
   }
 
+let url = "../data/out25.json";
 
+const hash = window.location.hash.substring(1);
 
+  if(hash) {
+    if(['25', '50', '75'].indexOf(hash)){
+      url = `../data/out${hash}.json`;
+    }
+  } 
 
 Promise.all([
-  d3.json("../data/out.json"),
+  d3.json(url),
   d3.json("../data/meta.json")
 ]).then( ([result, meta]) => {
 
@@ -206,25 +217,25 @@ Promise.all([
       // Add X axis
       const xAxis2 = d3.scaleBand()
       .domain(lstTerms)
-      .range([0, WIDTH])
+      .range([0, WIDTH + 400])
       .padding([0.05])
 
       svg2.append("g")
             .attr("class", "x axis")
-            .attr("transform", "translate(0," + (HEIGHT) + ")")
-            .call(d3.axisBottom(xAxis2).tickSizeOuter(0))
+            //.attr("transform", "translate(0," + (HEIGHT) + ")")
+            .call(d3.axisTop(xAxis2).tickSizeOuter(0))
             .selectAll("text")  
             .style("text-anchor", "end")
             .attr("dx", "-.8em")
-            .attr("dy", ".15em")
-            .attr("transform", "rotate(-65)");
+            .attr("dy", "1.1em")
+            .attr("transform", "rotate(90)");
 
       
 
       // Add Y axis
       const yAxis2 = d3.scaleBand()
       .domain(data.map((d)=>d.id))
-      .range([HEIGHT,0])
+      .range([0, HEIGHT])
 
       svg2.append("g")
       .call(d3.axisLeft(yAxis2));
