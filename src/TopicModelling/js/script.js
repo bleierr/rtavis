@@ -57,7 +57,7 @@ let url = "../data/out25.json";
 const hash = window.location.hash.substring(1);
 
   if(hash) {
-    if(['25', '50', '75'].indexOf(hash)){
+    if(['25', '50', '75', '100'].indexOf(hash)){
       url = `../data/out${hash}.json`;
     }
   } 
